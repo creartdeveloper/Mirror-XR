@@ -357,310 +357,294 @@
           </button>
     <!-- </div> -->
 
-    <script type="module">
-        const textInput = document.getElementById('textInput');
-        const modal = document.querySelector('.modal');
-        const modalContent = document.querySelector('.modal-content');
-        const closeButton = document.querySelector('.close-button');
-        let butterflies = [];
-        const butterflyTexts = {};
-        const maxButterflies = 6;
-        let id = 1;
-
-        const addTextButton = document.querySelector('.popup');
-
-        closeButton.addEventListener('click', (event) => {
-            console.log("Close button clicked");
-            console.log("Modal element:", modal);
-            console.log("Close button element:", closeButton);
-            hideModal();
-});
+      <script type="module">
+            const textInput = document.getElementById('textInput');
+            const modal = document.createElement('div');
+            const modalContent = document.querySelector('.modal-content');
+            const closeButton = document.createElement('div');
+            const mainContainer = document.getElementById("butterfly-main-container");
+            let butterflies = [];
+            const butterflyTexts = {};
+            const maxButterflies = 10;
+            let id = 1;
     
-        // Add click event to submit button
-        addTextButton.addEventListener('click', () => {
-            showModalWithTextBox();
-        });
-        //showModalWithTextBox();
-        
-        function arrayToCsv(data) 
-        {
-                    
-            // Check if the input data is an array
-                    if (!Array.isArray(data)) {
-                   
-                        throw new Error("Input must be an array");
-                    }
-                    
-                    // Convert the array into a CSV string
-                    return data
-                    .map(String)  // Convert each element to string
-                    .map(v => v.replaceAll('"', '""'))  // Escape double quotes
-                    .map(v => (v.includes(',') || v.includes('\r') || v.includes('\n')) ? `"${v}"` : v)  // Escape values with commas or newlines
-                    .join(',');  // Join all items with commas to form a single row
-        }
-        
-        
+            const addTextButton = document.querySelector('.popup-button');
+            modal.className = 'modal';
+            closeButton.className = 'close-button';
+            closeButton.innerHTML = '&times;'
     
+            closeButton.addEventListener('click', (event) => {
+                hideModal();
+    });
         
-        
-        function getRandomPosition() {
-            const x = Math.random() * (window.innerWidth - 400);
-            const y = Math.random() * (window.innerHeight - 400);
-            return { x, y };
-        }
-
-        
-        //
-        function showModalWithTextBox() 
-        {
-          
-          modal.innerHTML='';
-          const imageWithText = document.createElement('div');
-          
-          const textBox = document.createElement('textarea');
-          const textBox2 = document.createElement('textarea');
-          const nickNameBox = document.createElement('textarea');
-          
-          
-          textBox.className = 'butterfly-text-box';
-          textBox2.className = 'full-text-box';
-          imageWithText.className = 'butterfly-text-2';
-          nickNameBox.className = 'nick-name-box';
-          
-          
-         
-          nickNameBox.placeholder = 'nickname please';
-          textBox.maxLength="50";
-          textBox2.maxLength="250";
-          nickNameBox.maxLength="30";
-          
-          
-          imageWithText.appendChild(textBox);
-          
-          
-          
-          
-          const textDiv = document.createElement('div');
-          textDiv.className = 'full-text-box';
-          textDiv.appendChild(textBox2);
-        
-
-        
-         // Create submit button
-         const submitButton = document.createElement('button');
-         submitButton.innerHTML ="Submit";
-         submitButton.className = 'submit-button';
-
-         const icon = document.createElement('i');
-         icon.className = 'fas fa-check'; // Add Font Awesome class for the check icon
-        
-       
-
-
-        
-         // Add click event to submit button
-        submitButton.addEventListener('click', () => {
-            const text1 = textBox.value; // Get text from the first text box
-            const text2 = textBox2.value;
-            const nickName = nickNameBox.value;
-            createButterflyText(text1,nickName);
-            storeText(nickName,text1,text2);
-            hideModal();
-            // keyword, content, nickname
-            addButterflyToFirestore(text1, text2, nickName)
-        });
-
-                  
-           
-            modal.appendChild(closeButton);
-            modal.appendChild(imageWithText);
-            modal.appendChild(textBox2);
-            modal.appendChild(nickNameBox);
-            modal.appendChild(submitButton);
-        
-            
-            modal.classList.add('active');
-            modal.style.animation = 'pop-in 0.3s ease forwards';
-        
-        
-       
- 
- 
-}
-
-        //Stores each Butterfly in list
-        function storeText(nickName,shortText,fullText)
-        {
-            
-            const data ={};
-            data[shortText]=fullText;
-            butterflyTexts[nickName] = data;
-        
-        }
-
-
-        //Displays the Modal
-        function showModal(nickName) 
-        {
-          
-            modal.innerHTML='';
-            const fulldata = butterflyTexts[nickName];
-            const butterflyText = Object.keys(fulldata)[0];
-            const fullText = Object.values(fulldata)[0];
-            const imageWithText = document.createElement('div');
-            imageWithText.className = 'butterfly-text-2';
-            
-            const textContent = document.createElement('div');
-            textContent.className = 'text-content';
-            textContent.textContent = butterflyText;
-            
-            imageWithText.appendChild(textContent);
-            
-            const textDiv = document.createElement('div');
-            textDiv.className = 'card-text';
-            textDiv.innerHTML = fullText;
-            
-
-
-            const nickname = document.createElement('div');
-            nickname.className = 'nickname-text';
-            nickname.innerHTML = nickName;
-           
-
-          
-            modal.innerHTML='';
-            
-           
-            modal.appendChild(closeButton);
-            modal.appendChild(imageWithText);
-            modal.appendChild(textDiv);
-            modal.appendChild(nickname);
-        
-
-            
-        
-            modal.classList.add('active');
-            modal.style.animation = 'pop-in 0.3s ease forwards';
-        
-
-        }
-
-        
-        //Hides The Modal
-        function hideModal() {
-            console.log("HideModal called")
-            modal.classList.remove('active');
-            modal.style.animation = '';
-            
-        }
-
-        // Create each butterfly
-        function createButterflyText(text,nickName) {
-
-            const container = document.createElement('div');
-            container.className = 'butterfly-text';
-            
-            const textContent = document.createElement('div');
-            textContent.className = 'text-content';
-            textContent.textContent = text.length > 10 ? text.substring(0, 5) + '...' : text;
-            container.appendChild(textContent);
-            
-            
-            const position = getRandomPosition();
-            container.style.left = position.x + 'px';
-            container.style.top = position.y + 'px';
-            
-            container.style.animationDuration = (Math.random() * 3 + 4) + 's';
-            textContent.style.animationDuration = (Math.random() * 0.3 + 0.8) + 's';
-            
-            container.addEventListener('click', () => {
-                showModal(nickName);
+            // Add click event to submit button
+            addTextButton.addEventListener('click', () => {
+                showModalWithTextBox();
             });
+           
+    
 
-            document.body.appendChild(container);
+           function getRandomPosition() {
+                const x = Math.random() * (window.innerWidth - 400);
+                const y = Math.random() * (window.innerHeight - 400);
+                return { x, y };
+            }
             
-            if (butterflies.push(container) > maxButterflies) {
-                const oldest = butterflies.shift();
-                oldest.remove();
-            }
-
-            container.style.animation = `pop-in 0.3s ease forwards, float ${container.style.animationDuration} infinite ease-in-out`;
-        }
-
-
-       
-        
-        
-        // --------------------firebase initialise----------------------
-        // Import Firebase and initialize your app
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
-        import { getStorage } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-storage.js";
-        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
-
-        // Your Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyDiCIatzcDsnHdX_t-m15S1a8pNlrB2egs",
-            authDomain: "mira-7360b.firebaseapp.com",
-            projectId: "mira-7360b",
-            storageBucket: "mira-7360b.appspot.com",
-            messagingSenderId: "76074103771",
-            appId: "1:76074103771:web:1a2d4ca7e8b5df27a82dfe",
-            measurementId: "G-9YL8FHBDRX"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const storage = getStorage(app);
-
-        const db = getFirestore(app); // Initialize Firestore
-        const CHAR_BUTTERFLY_COLLECTION = "chat_butterfly";
-        // --------------------end firebase initialise----------------------
-
-        // sanitize the user input
-        function sanitizeInput(input) {
-            // Create a temporary element to use the browser's built-in HTML escaping
-            const element = document.createElement('div');
-            if (input) {
-                element.innerText = input;
-                return element.innerHTML; // This will escape HTML
-            }
-            return input;
-        }
-
-        // --------------------start retrieve the data----------------------
-        async function loadButterfliesFromFirestore() {
-            const querySnapshot = await getDocs(collection(db, CHAR_BUTTERFLY_COLLECTION));
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
-                const sanitizedKeyword = sanitizeInput(data.keyword);
-                const sanitizedContent = sanitizeInput(data.content);
-                const sanitizedNickname = sanitizeInput(data.nickname);
-                storeText(sanitizedNickname,sanitizedKeyword,sanitizedContent);
-                createButterflyText(sanitizedKeyword,sanitizedNickname); // Display each butterfly
+            //
+            function showModalWithTextBox() 
+            {
+              modal.innerHTML = '';
+              const imageWithText = document.createElement('div');
+              
+              const textBox = document.createElement('textarea');
+              const textBox2 = document.createElement('textarea');
+              const nickNameBox = document.createElement('textarea');
+              
+              
+              textBox.className = 'butterfly-text-box';
+              textBox2.className = 'full-text-box';
+              imageWithText.className = 'butterfly-text-2';
+              nickNameBox.className = 'nick-name-box';
+              
+              modal.appendChild(closeButton);
+             
+              nickNameBox.placeholder = 'nickname';
+              textBox.placeholder = 'short message';
+              textBox2.placeholder = 'message';
+              textBox.maxLength="50";
+              textBox2.maxLength="250";
+              nickNameBox.maxLength="15";
+              
+              
+              imageWithText.appendChild(textBox);
+              
+              
+              const textDiv = document.createElement('div');
+              textDiv.className = 'full-text-box';
+              textDiv.appendChild(textBox2);
+            
+    
+            
+             // Create submit button
+             const submitButton = document.createElement('button');
+             submitButton.innerHTML ="Submit";
+             submitButton.className = 'submit-button';
+    
+             const icon = document.createElement('i');
+             icon.className = 'fas fa-check'; // Add Font Awesome class for the check icon
+            
+           
+    
+    
+            
+             // Add click event to submit button
+            submitButton.addEventListener('click', () => {
+                const text1 = textBox.value; // Get text from the first text box
+                const text2 = textBox2.value;
+                const nickName = nickNameBox.value;
+                createButterflyText(text1,nickName);
+                storeText(nickName,text1,text2);
+                hideModal();
+                modal.innerHTML = '';
             });
-        }
-       loadButterfliesFromFirestore();
-        // --------------------end retrieve the data----------------------
-
-        // write to the firebase
-        async function addButterflyToFirestore(keyword, content, nickname) {
-            try { 
-                const sanitizedKeyword = sanitizeInput(keyword);
-                const sanitizedContent = sanitizeInput(content);
-                const sanitizedNickname = sanitizeInput(nickname);
-
-                // Reference to the 'chat_butterfly' collection
-                const docRef = await addDoc(collection(db, CHAR_BUTTERFLY_COLLECTION), {
-                    keyword: sanitizedKeyword,
-                    content: sanitizedContent,
-                    nickname:sanitizedNickname
+    
+                      
+               
+                modal.appendChild(closeButton);
+                modal.appendChild(imageWithText);
+                modal.appendChild(textBox2);
+                modal.appendChild(nickNameBox);
+                modal.appendChild(submitButton);
+            
+                
+                modal.classList.add('active');
+                modal.style.animation = 'pop-in 0.3s ease forwards';
+                mainContainer.appendChild(modal);
+            
+            
+           
+     
+     
+    }
+    
+            //Stores each Butterfly in list
+            function storeText(nickName,shortText,fullText)
+            {
+                
+                const data ={};
+                data[shortText]=fullText;
+                butterflyTexts[nickName] = data;
+            
+            }
+    
+    
+            //Displays the Modal
+            function showModal(nickName) 
+            {
+              
+                modal.innerHTML='';
+                const fulldata = butterflyTexts[nickName];
+                const butterflyText = Object.keys(fulldata)[0];
+                const fullText = Object.values(fulldata)[0];
+                const imageWithText = document.createElement('div');
+                imageWithText.className = 'butterfly-text-2';
+                
+                const textContent = document.createElement('div');
+                textContent.className = 'text-content';
+                textContent.textContent = butterflyText;
+                
+                imageWithText.appendChild(textContent);
+                
+                const textDiv = document.createElement('div');
+                textDiv.className = 'card-text';
+                textDiv.innerHTML = fullText;
+                
+    
+    
+                const nickname = document.createElement('div');
+                nickname.className = 'nickname-text';
+                nickname.innerHTML = nickName;
+               
+    
+              
+               
+                modal.appendChild(closeButton);
+                modal.appendChild(imageWithText);
+                modal.appendChild(textDiv);
+                modal.appendChild(nickname);
+            
+    
+                
+            
+                modal.classList.add('active');
+                modal.style.animation = 'pop-in 0.3s ease forwards';
+            
+    
+            }
+    
+            
+            //Hides The Modal
+            function hideModal() {
+                console.log("HideModal called")
+                modal.classList.remove('active');
+                modal.style.animation = '';
+                
+            }
+    
+            // Create each butterfly
+            function createButterflyText(text,nickName) {
+    
+                const container = document.createElement('div');
+                container.className = 'butterfly-text';
+                
+                const textContent = document.createElement('div');
+                textContent.className = 'text-content';
+                textContent.textContent = text.length > 50 ? text.substring(0, 5) + '...' : text;
+                container.appendChild(textContent);
+                
+                
+                const position = getRandomPosition();
+                container.style.left = position.x + 'px';
+                container.style.top = position.y + 'px';
+               
+                
+                container.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                textContent.style.animationDuration = (Math.random() * 0.3 + 0.8) + 's';
+                
+                container.addEventListener('click', () => {
+                    showModal(nickName);
                 });
-
-                // console.log("Document written with ID: ", docRef.id);
-            } catch (e) {
-                console.error("Error adding document: ", e);
+    
+                mainContainer.appendChild(container);
+                
+                if (butterflies.push(container) > maxButterflies) 
+                {
+                    
+                    const oldest = butterflies.shift();
+                    oldest.remove();
+                
+                }
+    
             }
-        }
-    </script>
+    
+    
+           
+            // --------------------firebase initialise----------------------
+            // Import Firebase and initialize your app
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+            import { getStorage } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-storage.js";
+            import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+    
+            // Your Firebase configuration
+            const firebaseConfig = {
+                apiKey: "AIzaSyDiCIatzcDsnHdX_t-m15S1a8pNlrB2egs",
+                authDomain: "mira-7360b.firebaseapp.com",
+                projectId: "mira-7360b",
+                storageBucket: "mira-7360b.appspot.com",
+                messagingSenderId: "76074103771",
+                appId: "1:76074103771:web:1a2d4ca7e8b5df27a82dfe",
+                measurementId: "G-9YL8FHBDRX"
+            };
+    
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            const storage = getStorage(app);
+    
+            const db = getFirestore(app); // Initialize Firestore
+            const CHAR_BUTTERFLY_COLLECTION = "chat_butterfly";
+            // --------------------end firebase initialise----------------------
+    
+            
+            
+            // sanitize the user input
+            function sanitizeInput(input) {
+                // Create a temporary element to use the browser's built-in HTML escaping
+                const element = document.createElement('div');
+                if (input) {
+                    element.innerText = input;
+                    return element.innerHTML; // This will escape HTML
+                }
+                return input;
+            }
+    
+            
+            
+            // --------------------start retrieve the data----------------------
+            async function loadButterfliesFromFirestore() {
+                const querySnapshot = await getDocs(collection(db, CHAR_BUTTERFLY_COLLECTION));
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const sanitizedKeyword = sanitizeInput(data.keyword);
+                    const sanitizedContent = sanitizeInput(data.content);
+                    const sanitizedNickname = sanitizeInput(data.nickname);
+                    storeText(sanitizedNickname,sanitizedKeyword,sanitizedContent);
+                    console.log(butterflyTexts);
+                    createButterflyText(sanitizedKeyword,sanitizedNickname); // Display each butterfly
+                });
+            }
+           //loadButterfliesFromFirestore();
+            // --------------------end retrieve the data----------------------
+    
+            // write to the firebase
+            async function addButterflyToFirestore(keyword, content, nickname) {
+                try { 
+                    console.log("add to FB");
+                    const sanitizedKeyword = sanitizeInput(keyword);
+                    const sanitizedContent = sanitizeInput(content);
+                    const sanitizedNickname = sanitizeInput(nickname);
+    
+                    // Reference to the 'chat_butterfly' collection
+                    const docRef = await addDoc(collection(db, CHAR_BUTTERFLY_COLLECTION), {
+                        keyword: sanitizedKeyword,
+                        content: sanitizedContent,
+                        nickname:sanitizedNickname
+                    });
+    
+                    console.log("Document written with ID: ", docRef.id);
+                } catch (e) {
+                    console.error("Error adding document: ", e);
+                }
+            }
+        </script>
 </body>
 </html>
