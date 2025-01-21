@@ -470,7 +470,10 @@
                 const text1 = textBox.value; // Get text from the first text box
                 const text2 = textBox2.value;
                 const nickName = nickNameBox.value;
-                createButterflyText(text1,nickName);
+                
+                //commenting out create butterfly to prevent butterflies being created as this is for ipad only
+                //createButterflyText(text1,nickName);
+                
                 storeText(nickName,text1,text2);
                 hideModal();
                 modal.innerHTML = '';
