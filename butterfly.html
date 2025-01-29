@@ -467,12 +467,12 @@
             
              // Add click event to submit button
             submitButton.addEventListener('click', () => {
-                const text1 = textBox.value; // Get text from the first text box
-                const text2 = textBox2.value;
-                const nickName = nickNameBox.value;
+                const text1 = textBox.value; // short text box
+                const text2 = textBox2.value;// long text box
+                const nickName = nickNameBox.value; //nickname box
                 createButterflyText(text1,nickName);
                 storeText(nickName,text1,text2);
-                addButterflyToFirestore(nickName,text1,text2);
+                addButterflyToFirestore(text1,text2,nickName);
                 hideModal();
                 modal.innerHTML = '';
             });
