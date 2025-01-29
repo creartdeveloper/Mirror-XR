@@ -472,6 +472,7 @@
                 const nickName = nickNameBox.value;
                 createButterflyText(text1,nickName);
                 storeText(nickName,text1,text2);
+                addButterflyToFirestore(nickName,text1,text2);
                 hideModal();
                 modal.innerHTML = '';
             });
@@ -649,7 +650,6 @@
                     console.log(butterflyTexts);
                     console.log(sanitizedKeyword,sanitizedContent);
                     createButterflyText(sanitizedKeyword,sanitizedNickname);
-                    addButterflyToFirestore(sanitizedNickname,sanitizedKeyword,sanitizedContent);
                     // Display each butterfly
                 });
             }
