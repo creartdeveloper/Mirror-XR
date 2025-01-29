@@ -601,7 +601,7 @@
             // Import Firebase and initialize your app
             import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
             import { getStorage } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-storage.js";
-            import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+            import { getFirestore, collection, addDoc, getDocs,writeBatch } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
             
             
             // Your Firebase configuration
@@ -654,6 +654,7 @@
                 });
             }
            loadButterfliesFromFirestore();
+          // deleteAllButterflies() 
             // --------------------end retrieve the data----------------------
     
             // write to the firebase
@@ -675,6 +676,24 @@
                 } catch (e) {
                     console.error("Error adding document: ", e);
                 }
+            }
+            
+            //Delete Butterflies from the Firebase
+            async function deleteAllButterflies() 
+            {
+                        try {
+                        const querySnapshot = await getDocs(collection(db, CHAR_BUTTERFLY_COLLECTION));
+                        const batch = writeBatch(db);
+                        
+                        querySnapshot.forEach((doc) => {
+                            batch.delete(doc.ref);
+                        });
+
+                        await batch.commit();
+                        console.log("All documents deleted successfully");
+                    } catch (error) {
+                        console.error("Error deleting documents: ", error);
+                    }
             }
         </script>
     </body>
