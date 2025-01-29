@@ -648,6 +648,7 @@
                     const sanitizedNickname = sanitizeInput(data.nickname);
                     storeText(sanitizedNickname,sanitizedKeyword,sanitizedContent);
                     console.log(butterflyTexts);
+                    console.log(sanitizedKeyword,sanitizedContent);
                     createButterflyText(sanitizedKeyword,sanitizedNickname); // Display each butterfly
                 });
             }
