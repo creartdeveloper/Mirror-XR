@@ -617,6 +617,7 @@
             // Initialize Firebase
             const app = initializeApp(firebaseConfig);
             const storage = getStorage(app);
+            let timestamps =[];
     
             const db = getFirestore(app); // Initialize Firestore
             const CHAR_BUTTERFLY_COLLECTION = "chat_butterfly";
