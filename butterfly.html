@@ -608,6 +608,9 @@
             import { getFirestore, collection, addDoc, getDocs,writeBatch } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
             
             
+            
+            let timestamps =[];
+            
             // Your Firebase configuration
             const firebaseConfig = {
                 apiKey: "AIzaSyDiCIatzcDsnHdX_t-m15S1a8pNlrB2egs",
@@ -643,19 +646,38 @@
             
             
             // --------------------start retrieve the data----------------------
+            
+            
+            async function storeTimeStamp(timestamp)
+            {
+                  timestamps.push(timestamp);
+            }
+
+            
+            
+            
             async function loadButterfliesFromFirestore() {
                 const querySnapshot = await getDocs(collection(db, CHAR_BUTTERFLY_COLLECTION));
                 querySnapshot.forEach((doc) => {
+                   
                     const data = doc.data();
+                    const timestamp = doc._document.createTime.timestamp.seconds;
                     const sanitizedKeyword = sanitizeInput(data.keyword);
                     const sanitizedContent = sanitizeInput(data.content);
                     const sanitizedNickname = sanitizeInput(data.nickname);
-                    storeText(sanitizedNickname,sanitizedKeyword,sanitizedContent);
-                    createButterflyText(sanitizedKeyword,sanitizedNickname);
+                    if(!timestamps.includes(timestamp))
+                    {
+                        storeTimeStamp(timestamp);
+                        storeText(sanitizedNickname,sanitizedKeyword,sanitizedContent);
+                        createButterflyText(sanitizedKeyword,sanitizedNickname);
+                    }
                     // Display each butterfly
                 });
             }
            loadButterfliesFromFirestore();
+           setInterval(function() {
+            loadButterfliesFromFirestore();
+           }, 3000);
           // deleteAllButterflies() 
             // --------------------end retrieve the data----------------------
     
