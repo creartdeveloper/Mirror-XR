@@ -638,25 +638,38 @@
             
             
             // --------------------start retrieve the data----------------------
+            async function storeTimeStamp(timestamp)
+            {
+                  timestamps.push(timestamp);
+            }
+
+            
+            
+            
+            let canFetch = true;
+
             async function loadButterfliesFromFirestore() {
-                const querySnapshot = await getDocs(collection(db, CHAR_BUTTERFLY_COLLECTION));
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const sanitizedKeyword = sanitizeInput(data.keyword);
-                    const sanitizedContent = sanitizeInput(data.content);
-                    const sanitizedNickname = sanitizeInput(data.nickname);
-                    
-                    // Check if this nickname already exists in butterflyTexts
-                    if (!butterflyTexts[sanitizedNickname] || 
-                        !butterflyTexts[sanitizedNickname][sanitizedKeyword]) {
-                        
-                        // Only store and create if it's new
-                        storeText(sanitizedNickname, sanitizedKeyword, sanitizedContent);
-                        createButterflyText(sanitizedKeyword, sanitizedNickname);
-                        console.log('New butterfly added for:', sanitizedNickname);
-                    }
-     });
-}
+                if (!canFetch) return;
+                canFetch = false;
+
+                try {
+                    const querySnapshot = await getDocs(collection(db, CHAR_BUTTERFLY_COLLECTION));
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        const timestamp = doc._document.createTime.timestamp.seconds;
+                        if (!timestamps.includes(timestamp)) {
+                            storeTimeStamp(timestamp);
+                            storeText(sanitizeInput(data.nickname), sanitizeInput(data.keyword), sanitizeInput(data.content));
+                            requestAnimationFrame(() => createButterflyText(data.keyword, data.nickname));
+                        }
+                    });
+                } finally {
+                    canFetch = true;
+                }
+            }
+
+            loadButterfliesFromFirestore();
+            setInterval(loadButterfliesFromFirestore, 3000);
 
            loadButterfliesFromFirestore();
            setInterval(loadButterfliesFromFirestore, 5000);
