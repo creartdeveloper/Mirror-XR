@@ -657,28 +657,30 @@
             
             
             
+            let canFetch = true;
+
             async function loadButterfliesFromFirestore() {
-                const querySnapshot = await getDocs(collection(db, CHAR_BUTTERFLY_COLLECTION));
-                querySnapshot.forEach((doc) => {
-                   
-                    const data = doc.data();
-                    const timestamp = doc._document.createTime.timestamp.seconds;
-                    const sanitizedKeyword = sanitizeInput(data.keyword);
-                    const sanitizedContent = sanitizeInput(data.content);
-                    const sanitizedNickname = sanitizeInput(data.nickname);
-                    if(!timestamps.includes(timestamp))
-                    {
-                        storeTimeStamp(timestamp);
-                        storeText(sanitizedNickname,sanitizedKeyword,sanitizedContent);
-                        createButterflyText(sanitizedKeyword,sanitizedNickname);
-                    }
-                    // Display each butterfly
-                });
+                if (!canFetch) return;
+                canFetch = false;
+
+                try {
+                    const querySnapshot = await getDocs(collection(db, CHAR_BUTTERFLY_COLLECTION));
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        const timestamp = doc._document.createTime.timestamp.seconds;
+                        if (!timestamps.includes(timestamp)) {
+                            storeTimeStamp(timestamp);
+                            storeText(sanitizeInput(data.nickname), sanitizeInput(data.keyword), sanitizeInput(data.content));
+                            requestAnimationFrame(() => createButterflyText(data.keyword, data.nickname));
+                        }
+                    });
+                } finally {
+                    canFetch = true;
+                }
             }
-           loadButterfliesFromFirestore();
-           setInterval(function() {
+
             loadButterfliesFromFirestore();
-           }, 3000);
+            setInterval(loadButterfliesFromFirestore, 3000);
           // deleteAllButterflies() 
             // --------------------end retrieve the data----------------------
     
