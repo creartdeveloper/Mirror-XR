@@ -402,15 +402,9 @@
             closeButton.className = 'close-button';
             closeButton.innerHTML = '&times;'
     
-            closeButton.addEventListener('click', (event) => {
-                hideModal();
-    });
-        
-            // Add click event to submit button
-            addTextButton.addEventListener('click', () => {
-                showModalWithTextBox();
-                console.log("POP clicked");
-            });
+            closeButton.addEventListener('click', hideModal, { passive: true });
+
+             addTextButton.addEventListener('click', showModalWithTextBox, { passive: true });
            
     
 
