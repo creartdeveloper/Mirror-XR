@@ -477,6 +477,7 @@
                 //createButterflyText(text1,nickName);
                 
                 storeText(nickName,text1,text2);
+                addButterflyToFirestore(text1,text2,nickName);
                 hideModal();
                 modal.innerHTML = '';
             });
