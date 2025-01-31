@@ -551,10 +551,12 @@
             }
     
             
-            //Hides The Modal
+            //function to hide modal
             function hideModal() {
-                modal.classList.remove('active');
-                modal.style.animation = '';
+                console.log("HideModal called")
+                mainContainer.removeChild(modal);
+                // modal.classList.remove('active');
+                // modal.style.animation = '';
                 
             }
     

@@ -110,8 +110,7 @@
                 const nickName = nickNameBox.value;
                 
                 //commenting out create butterfly to prevent butterflies being created as this is for ipad only
-                //createButterflyText(text1,nickName);
-                
+                createButterflyText(text1,nickName);
                 storeText(nickName,text1,text2);
                 addButterflyToFirestore(text1,text2,nickName);
                 hideModal();
@@ -187,6 +186,7 @@
                 
             
                 modal.classList.add('active');
+                mainContainer.appendChild(modal);
                 modal.style.animation = 'pop-in 0.3s ease forwards';
             
     
@@ -196,8 +196,9 @@
             //Hides The Modal
             function hideModal() {
                 console.log("HideModal called")
-                modal.classList.remove('active');
-                modal.style.animation = '';
+                mainContainer.removeChild(modal);
+                // modal.classList.remove('active');
+                // modal.style.animation = '';
                 
             }
     
@@ -223,6 +224,7 @@
                 
                 container.addEventListener('click', () => {
                     showModal(nickName);
+                    console.log("container clicked");
                 });
     
                 mainContainer.appendChild(container);
@@ -294,7 +296,7 @@
             }
             // Commenting this fucntion to prevent butterflies in the screen
             
-            //loadButterfliesFromFirestore();
+            loadButterfliesFromFirestore();
             
             // --------------------end retrieve the data----------------------
     
