@@ -121,6 +121,7 @@
         .modal.active {
                     opacity: 1;
                     display: flex;  
+                    transition: opacity 0.3s ease;
                 }
     
         .modal-overlay.active {
@@ -406,9 +407,9 @@
     });
         
             // Add click event to submit button
-            addTextButton.addEventListener('click', () => {
-                showModalWithTextBox();
-            });
+            // addTextButton.addEventListener('click', () => {
+            //     showModalWithTextBox();
+            // });
            
     
 
@@ -465,7 +466,20 @@
     
     
             
-             // Add click event to submit button
+            
+    
+                      
+               
+                modal.appendChild(closeButton);
+                modal.appendChild(imageWithText);
+                modal.appendChild(textBox2);
+                modal.appendChild(nickNameBox);
+                modal.appendChild(submitButton);
+                modal.classList.add('active');
+
+
+
+                 // Add click event to submit button
             submitButton.addEventListener('click', () => {
                 const text1 = textBox.value; // short text box
                 const text2 = textBox2.value;// long text box
@@ -476,19 +490,9 @@
                 hideModal();
                 modal.innerHTML = '';
             });
-    
-                      
-               
-                modal.appendChild(closeButton);
-                modal.appendChild(imageWithText);
-                modal.appendChild(textBox2);
-                modal.appendChild(nickNameBox);
-                modal.appendChild(submitButton);
-            
-                
-                modal.classList.add('active');
                 modal.style.animation = 'pop-in 0.3s ease forwards';
                 mainContainer.appendChild(modal);
+              
             
             
            
@@ -510,7 +514,6 @@
             //Displays the Modal
             function showModal(nickName) 
             {
-              
                 modal.innerHTML='';
                 const fulldata = butterflyTexts[nickName];
                 const butterflyText = Object.keys(fulldata)[0];
@@ -546,6 +549,7 @@
                 
             
                 modal.classList.add('active');
+                mainContainer.appendChild(modal);
                 modal.style.animation = 'pop-in 0.3s ease forwards';
             
     
@@ -554,7 +558,6 @@
             
             //Hides The Modal
             function hideModal() {
-                console.log("HideModal called")
                 modal.classList.remove('active');
                 modal.style.animation = '';
                 
@@ -581,6 +584,7 @@
                 textContent.style.animationDuration = (Math.random() * 0.3 + 0.8) + 's';
                 
                 container.addEventListener('click', () => {
+                   
                     showModal(nickName);
                 });
     
@@ -647,8 +651,6 @@
                     const sanitizedContent = sanitizeInput(data.content);
                     const sanitizedNickname = sanitizeInput(data.nickname);
                     storeText(sanitizedNickname,sanitizedKeyword,sanitizedContent);
-                    console.log(butterflyTexts);
-                    console.log(sanitizedKeyword,sanitizedContent);
                     createButterflyText(sanitizedKeyword,sanitizedNickname);
                     // Display each butterfly
                 });
@@ -660,7 +662,6 @@
             // write to the firebase
             async function addButterflyToFirestore(keyword, content, nickname) {
                 try { 
-                    console.log("add to FB");
                     const sanitizedKeyword = sanitizeInput(keyword);
                     const sanitizedContent = sanitizeInput(content);
                     const sanitizedNickname = sanitizeInput(nickname);
@@ -672,7 +673,6 @@
                         nickname:sanitizedNickname
                     });
     
-                    console.log("Document written with ID: ", docRef.id);
                 } catch (e) {
                     console.error("Error adding document: ", e);
                 }
