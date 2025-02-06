@@ -109,10 +109,11 @@
                 const text2 = textBox2.value;
                 const nickName = nickNameBox.value;
                 
+                const hasBadWords = badWordsArray.
                 //commenting out create butterfly to prevent butterflies being created as this is for ipad only
                 createButterflyText(text1,nickName);
                 storeText(nickName,text1,text2);
-                addButterflyToFirestore(text1,text2,nickName);
+                //addButterflyToFirestore(text1,text2,nickName);
                 hideModal();
                 modal.innerHTML = '';
             });
@@ -205,6 +206,20 @@
             // Create each butterfly
             function createButterflyText(text,nickName) {
     
+               
+                // Convert input text to lowercase for case-insensitive comparison
+                const inputText = text.toLowerCase();
+                // Check if any bad word is contained in the input text
+                const hasBadWords = badWordsArray.some(badWord => 
+                    inputText.includes(badWord.toLowerCase())
+                );
+                
+                if(hasBadWords) {
+                    console.log("Bad word detected in" );
+                    return;
+                }
+
+                
                 const container = document.createElement('div');
                 container.className = 'butterfly-text';
                 
@@ -239,8 +254,6 @@
     
             }
     
-    
-           
             // --------------------firebase initialise----------------------
             // Import Firebase and initialize your app
             import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
@@ -261,9 +274,11 @@
             // Initialize Firebase
             const app = initializeApp(firebaseConfig);
             const storage = getStorage(app);
+            const badWordsArray = [];
     
             const db = getFirestore(app); // Initialize Firestore
             const CHAR_BUTTERFLY_COLLECTION = "chat_butterfly";
+            const BAD_WORD_COLLECTION = "bad_words"
             // --------------------end firebase initialise----------------------
     
             
@@ -281,6 +296,30 @@
     
             
             
+            
+            
+            //----Load Bad Words-------//
+            async function loadBadWordsFromFirestore() {
+                    try {
+                        const querySnapshot = await getDocs(collection(db, "bad_words"));
+                        querySnapshot.forEach((doc) => {
+                            const data = doc.data();
+                            // Split the string into individual words
+                            // Depending on how your data is formatted, use the appropriate split character
+                            const wordsArray = data.word
+                                .split(/[\n,\s]+/) // Split by newline, comma, or whitespace
+                                .map(word => word.trim().toLowerCase())
+                                .filter(word => word.length > 0);
+                            
+                            // Add the words to your array
+                            badWordsArray.push(...wordsArray);
+                        });
+                        
+                    } catch (error) {
+                        console.error("Error loading bad words:", error);
+                    }
+                }
+
             // --------------------start retrieve the data----------------------
             async function loadButterfliesFromFirestore() {
                 const querySnapshot = await getDocs(collection(db, CHAR_BUTTERFLY_COLLECTION));
@@ -297,13 +336,13 @@
             // Commenting this fucntion to prevent butterflies in the screen
             
             loadButterfliesFromFirestore();
+            loadBadWordsFromFirestore();
             
             // --------------------end retrieve the data----------------------
     
             // write to the firebase
             async function addButterflyToFirestore(keyword, content, nickname) {
                 try { 
-                    console.log("add to FB");
                     const sanitizedKeyword = sanitizeInput(keyword);
                     const sanitizedContent = sanitizeInput(content);
                     const sanitizedNickname = sanitizeInput(nickname);
@@ -315,11 +354,13 @@
                         nickname:sanitizedNickname
                     });
     
-                    console.log("Document written with ID: ", docRef.id);
                 } catch (e) {
                     console.error("Error adding document: ", e);
                 }
             }
+
+
+           
         </script>
     </body>
     </html>
