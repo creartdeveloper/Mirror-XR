@@ -109,7 +109,13 @@
                 const text2 = textBox2.value;
                 const nickName = nickNameBox.value;
                 
-                const hasBadWords = badWordsArray.
+                //checking if the texts contain bad words//
+                if(checkBadWord(text1)||checkBadWord(text2)||checkBadWord(nickName))
+                {
+                    hideModal();
+                    modal.innerHTML = '';
+                    return ;
+                }
                 //commenting out create butterfly to prevent butterflies being created as this is for ipad only
                 createButterflyText(text1,nickName);
                 storeText(nickName,text1,text2);
@@ -206,20 +212,6 @@
             // Create each butterfly
             function createButterflyText(text,nickName) {
     
-               
-                // Convert input text to lowercase for case-insensitive comparison
-                const inputText = text.toLowerCase();
-                // Check if any bad word is contained in the input text
-                const hasBadWords = badWordsArray.some(badWord => 
-                    inputText.includes(badWord.toLowerCase())
-                );
-                
-                if(hasBadWords) {
-                    console.log("Bad word detected in" );
-                    return;
-                }
-
-                
                 const container = document.createElement('div');
                 container.className = 'butterfly-text';
                 
@@ -320,7 +312,27 @@
                     }
                 }
 
-            // --------------------start retrieve the data----------------------
+            
+            function checkBadWord(text)
+            {
+                
+                // Convert input text to lowercase for case-insensitive comparison
+                const inputText = text.toLowerCase();
+                // Check if any bad word is contained in the input text
+                const hasBadWords = badWordsArray.some(badWord => 
+                    inputText.includes(badWord.toLowerCase())
+                );
+                
+                if(hasBadWords) {
+                    console.log("Bad word detected in" );
+                    return false;
+                }
+                return true;
+
+            }
+            
+            
+                // --------------------start retrieve the data----------------------
             async function loadButterfliesFromFirestore() {
                 const querySnapshot = await getDocs(collection(db, CHAR_BUTTERFLY_COLLECTION));
                 querySnapshot.forEach((doc) => {
