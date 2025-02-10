@@ -112,9 +112,9 @@
                 //checking if the texts contain bad words//
                 if(checkBadWord(text1)||checkBadWord(text2)||checkBadWord(nickName))
                 {
-                    console.log("Bad");
                     hideModal();
                     modal.innerHTML = '';
+                    return ;
                    
                    
                 }
@@ -313,18 +313,21 @@
                 }
 
             
-            function checkBadWord(text)
+                function checkBadWord(text)
             {
                 
                 // Convert input text to lowercase for case-insensitive comparison
                 const inputText = text.toLowerCase();
+                let badtext="";
+                
                 // Check if any bad word is contained in the input text
-                const hasBadWords = badWordsArray.some(badWord => 
-                    inputText.includes(badWord.toLowerCase())
-                );
+                const hasBadWords = badWordsArray.some(badWord => {
+                const regex = new RegExp(`\\b${badWord}\\b`, 'i');
+                return regex.test(inputText);
+            });
+                console.log(hasBadWords);
                 
                 if(hasBadWords) {
-                    console.log("Bad word detected in" );
                     return true;
                 }
                 return false;
