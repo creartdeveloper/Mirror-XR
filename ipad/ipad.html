@@ -112,16 +112,20 @@
                 //checking if the texts contain bad words//
                 if(checkBadWord(text1)||checkBadWord(text2)||checkBadWord(nickName))
                 {
+                    console.log("Bad");
                     hideModal();
                     modal.innerHTML = '';
-                    return ;
+                   
+                   
                 }
-                //commenting out create butterfly to prevent butterflies being created as this is for ipad only
+               else{
                 createButterflyText(text1,nickName);
                 storeText(nickName,text1,text2);
                 addButterflyToFirestore(text1,text2,nickName);
                 hideModal();
                 modal.innerHTML = '';
+               } //commenting out create butterfly to prevent butterflies being created as this is for ipad only
+                
             });
     
                       
@@ -249,7 +253,7 @@
             // Import Firebase and initialize your app
             import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
             import { getStorage } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-storage.js";
-            import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+            import { getFirestore, collection, addDoc, getDocs,setDoc,doc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
     
             // Your Firebase configuration
             const firebaseConfig = {
@@ -321,9 +325,9 @@
                 
                 if(hasBadWords) {
                     console.log("Bad word detected in" );
-                    return false;
+                    return true;
                 }
-                return true;
+                return false;
 
             }
             
@@ -354,14 +358,17 @@
                     const sanitizedKeyword = sanitizeInput(keyword);
                     const sanitizedContent = sanitizeInput(content);
                     const sanitizedNickname = sanitizeInput(nickname);
-    
-                    // Reference to the 'chat_butterfly' collection
-                    const docRef = await addDoc(collection(db, CHAR_BUTTERFLY_COLLECTION), {
+
+                    // Create a document reference with custom ID
+                    const docRef = doc(db, CHAR_BUTTERFLY_COLLECTION, "ipadsession1");
+                    
+                    // Use setDoc with the document reference
+                    await setDoc(docRef, {
                         keyword: sanitizedKeyword,
                         content: sanitizedContent,
-                        nickname:sanitizedNickname
+                        nickname: sanitizedNickname
                     });
-    
+
                 } catch (e) {
                     console.error("Error adding document: ", e);
                 }

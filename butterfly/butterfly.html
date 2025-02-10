@@ -230,7 +230,6 @@
                 
                 container.addEventListener('click', () => {
                     showModal(nickName);
-                    console.log("container clicked");
                 });
     
                 mainContainer.appendChild(container);
@@ -317,16 +316,19 @@
                 
                 // Convert input text to lowercase for case-insensitive comparison
                 const inputText = text.toLowerCase();
+                let badtext="";
+                
                 // Check if any bad word is contained in the input text
-                const hasBadWords = badWordsArray.some(badWord => 
-                    inputText.includes(badWord.toLowerCase())
-                );
+                const hasBadWords = badWordsArray.some(badWord => {
+                const regex = new RegExp(`\\b${badWord}\\b`, 'i');
+                return regex.test(inputText);
+            });
+                console.log(hasBadWords);
                 
                 if(hasBadWords) {
-                    console.log("Bad word detected in" );
-                    return false;
+                    return true;
                 }
-                return true;
+                return false;
 
             }
             
@@ -340,7 +342,6 @@
                     const sanitizedContent = sanitizeInput(data.content);
                     const sanitizedNickname = sanitizeInput(data.nickname);
                     storeText(sanitizedNickname,sanitizedKeyword,sanitizedContent);
-                    console.log(butterflyTexts);
                     createButterflyText(sanitizedKeyword,sanitizedNickname); // Display each butterfly
                 });
             }

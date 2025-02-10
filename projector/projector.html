@@ -286,6 +286,9 @@ async function storeTimeStamp(timestamp)
 
 let canFetch = true;
 
+
+//Here this function is different form other load Butterfly ones 
+//as it cross check the timestamps and only allows the latest ones
 async function loadButterfliesFromFirestore() {
 
     if (!canFetch) return;
@@ -308,11 +311,13 @@ async function loadButterfliesFromFirestore() {
 }
 
 loadButterfliesFromFirestore();
+
+//Function to load butterlfies every 1 second
 setInterval(loadButterfliesFromFirestore, 1000);
 
 // --------------------end retrieve the data----------------------
 
-// write to the firebase
+// Write to the firebase
 async function addButterflyToFirestore(keyword, content, nickname) {
     try { 
         console.log("add to FB");
