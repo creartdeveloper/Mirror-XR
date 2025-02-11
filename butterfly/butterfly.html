@@ -248,7 +248,7 @@
             // Import Firebase and initialize your app
             import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
             import { getStorage } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-storage.js";
-            import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+            import { getFirestore, collection, addDoc, getDocs,setDoc,doc,query,where } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
     
             // Your Firebase configuration
             const firebaseConfig = {
@@ -335,16 +335,23 @@
             
                 // --------------------start retrieve the data----------------------
             async function loadButterfliesFromFirestore() {
-                const querySnapshot = await getDocs(collection(db, CHAR_BUTTERFLY_COLLECTION));
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const sanitizedKeyword = sanitizeInput(data.keyword);
-                    const sanitizedContent = sanitizeInput(data.content);
-                    const sanitizedNickname = sanitizeInput(data.nickname);
-                    storeText(sanitizedNickname,sanitizedKeyword,sanitizedContent);
-                    createButterflyText(sanitizedKeyword,sanitizedNickname); // Display each butterfly
-                });
-            }
+               
+               const q = query(
+               collection(db, CHAR_BUTTERFLY_COLLECTION),
+               where("device", "==", "website")
+               );
+               const querySnapshot = await getDocs(q);
+
+               querySnapshot.forEach((doc) => {
+                   const data = doc.data();
+                   const sanitizedKeyword = sanitizeInput(data.keyword);
+                   const sanitizedContent = sanitizeInput(data.content);
+                   const sanitizedNickname = sanitizeInput(data.nickname);
+                   storeText(sanitizedNickname,sanitizedKeyword,sanitizedContent);
+                   console.log(butterflyTexts);
+                   createButterflyText(sanitizedKeyword,sanitizedNickname); // Display each butterfly
+               });
+           }
             // Commenting this fucntion to prevent butterflies in the screen
             
             loadButterfliesFromFirestore();
@@ -355,19 +362,25 @@
             // write to the firebase
             async function addButterflyToFirestore(keyword, content, nickname) {
                 try { 
+                    
                     const sanitizedKeyword = sanitizeInput(keyword);
                     const sanitizedContent = sanitizeInput(content);
                     const sanitizedNickname = sanitizeInput(nickname);
-    
-                    // Reference to the 'chat_butterfly' collection
+
+                    // Create a new document with auto-generated ID in the collection
                     const docRef = await addDoc(collection(db, CHAR_BUTTERFLY_COLLECTION), {
+                        device: "website",
                         keyword: sanitizedKeyword,
                         content: sanitizedContent,
-                        nickname:sanitizedNickname
+                        nickname: sanitizedNickname,
                     });
-    
+
+                    console.log("Document written with ID: ", docRef.id);
+                    return docRef.id;
+
                 } catch (e) {
                     console.error("Error adding document: ", e);
+                    throw e; // Propagate error to caller
                 }
             }
 

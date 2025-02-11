@@ -289,26 +289,24 @@ let canFetch = true;
 
 //Here this function is different form other load Butterfly ones 
 //as it cross check the timestamps and only allows the latest ones
-async function loadButterfliesFromFirestore() {
+    async function loadButterfliesFromFirestore() {
+               
+               const q = query(
+               collection(db, CHAR_BUTTERFLY_COLLECTION),
+               where("device", "==", "ipad")
+               );
+               const querySnapshot = await getDocs(q);
 
-    if (!canFetch) return;
-    canFetch = false;
-
-    try {
-        const querySnapshot = await getDocs(collection(db, CHAR_BUTTERFLY_COLLECTION));
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            const timestamp = doc._document.createTime.timestamp.seconds;
-            if (!timestamps.includes(timestamp)) {
-                storeTimeStamp(timestamp);
-                storeText(sanitizeInput(data.nickname), sanitizeInput(data.keyword), sanitizeInput(data.content));
-                requestAnimationFrame(() => createButterflyText(data.keyword, data.nickname));
-            }
-        });
-    } finally {
-        canFetch = true;
-    }
-}
+               querySnapshot.forEach((doc) => {
+                   const data = doc.data();
+                   const sanitizedKeyword = sanitizeInput(data.keyword);
+                   const sanitizedContent = sanitizeInput(data.content);
+                   const sanitizedNickname = sanitizeInput(data.nickname);
+                   storeText(sanitizedNickname,sanitizedKeyword,sanitizedContent);
+                   console.log(butterflyTexts);
+                   createButterflyText(sanitizedKeyword,sanitizedNickname); // Display each butterfly
+               });
+           }
 
 loadButterfliesFromFirestore();
 
