@@ -342,7 +342,8 @@
                
                 const q = query(
                 collection(db, CHAR_BUTTERFLY_COLLECTION),
-                where("device", "==", "ipad")
+                where("device", "==", "ipad"),
+                where("session","==","3")
                 );
                 const querySnapshot = await getDocs(q);
 
@@ -374,6 +375,7 @@
                     const docRef = await addDoc(collection(db, CHAR_BUTTERFLY_COLLECTION), {
                         id:id,
                         device: "ipad",
+                        session:"3",
                         keyword: sanitizedKeyword,
                         content: sanitizedContent,
                         nickname: sanitizedNickname,
