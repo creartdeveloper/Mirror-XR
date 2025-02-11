@@ -275,20 +275,17 @@ function sanitizeInput(input) {
 
 
 // --------------------start retrieve the data----------------------
-async function storeTimeStamp(timestamp)
+let ids =[];
+    async function storeId(id)
 {
-      timestamps.push(timestamp);
+      ids.push(id);
 }
-
-
-
-
-let canFetch = true;
 
 
 //Here this function is different form other load Butterfly ones 
 //as it cross check the timestamps and only allows the latest ones
-    async function loadButterfliesFromFirestore() {
+async function loadButterfliesFromFirestore() 
+    {
                
                const q = query(
                collection(db, CHAR_BUTTERFLY_COLLECTION),
@@ -302,11 +299,16 @@ let canFetch = true;
                    const sanitizedKeyword = sanitizeInput(data.keyword);
                    const sanitizedContent = sanitizeInput(data.content);
                    const sanitizedNickname = sanitizeInput(data.nickname);
-                   storeText(sanitizedNickname,sanitizedKeyword,sanitizedContent);
-                   console.log(butterflyTexts);
-                   createButterflyText(sanitizedKeyword,sanitizedNickname); // Display each butterfly
+                   const bid = sanitizeInput(data.id);
+                   if(!ids.includes(bid))
+                { 
+                    ids.push(bid);
+                    storeText(sanitizedNickname,sanitizedKeyword,sanitizedContent);
+                    createButterflyText(sanitizedKeyword,sanitizedNickname,bid); 
+                }
                });
-           }
+    
+    }
 
 loadButterfliesFromFirestore();
 
