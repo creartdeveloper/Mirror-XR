@@ -198,7 +198,6 @@
 
     //Hides The Modal
     function hideModal() {
-        console.log("HideModal called")
         modal.classList.remove('active');
         modal.style.animation = '';
         
@@ -296,9 +295,10 @@
   
     let ids =[];
     async function storeId(id)
-{
-      ids.push(id);
-}
+    {
+        ids.push(id);
+    }
+    let currIds = [];
 
     async function loadButterfliesFromFirestore() 
     {
@@ -315,6 +315,7 @@
                    const sanitizedContent = sanitizeInput(data.content);
                    const sanitizedNickname = sanitizeInput(data.nickname);
                    const bid = sanitizeInput(data.id);
+                   currIds.push(bid);
                    if(!ids.includes(bid))
                 { 
                     ids.push(bid);
@@ -322,11 +323,12 @@
                     createButterflyText(sanitizedKeyword,sanitizedNickname,bid); 
                 }
                });
+              
     
     }
 
     loadButterfliesFromFirestore();
-    setInterval(loadButterfliesFromFirestore, 1000);
+    setInterval(loadButterfliesFromFirestore, 3000);
 
     // --------------------end retrieve the data----------------------
 
@@ -348,6 +350,7 @@
             console.error("Error adding document: ", e);
         }
     }
+   
 
     async function deleteButterflyFromFirestore(id) {
             try {
@@ -363,8 +366,6 @@
                 // Delete each matching document
                 const deletePromises = querySnapshot.docs.map(doc => deleteDoc(doc.ref));
                 await Promise.all(deletePromises);
-                
-                console.log("Butterfly with ID:", id, "deleted successfully");
             } catch (error) {
                 console.error("Error deleting butterfly:", error);
                 throw error;

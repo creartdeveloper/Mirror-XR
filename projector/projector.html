@@ -8,7 +8,6 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Delius&family=Pacifico&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="projector.css">
-        <script type="module" src="projector.js"></script>
     </head>
     <body class="butterfly-body">
         <div id="butterfly-main-container">
@@ -197,10 +196,11 @@ function hideModal() {
 }
 
 // Create each butterfly
-function createButterflyText(text,nickName) {
+function createButterflyText(text,nickName,id) {
 
     const container = document.createElement('div');
     container.className = 'butterfly-text';
+    container.id= id;
     
     const textContent = document.createElement('div');
     textContent.className = 'text-content';
@@ -289,52 +289,60 @@ let canFetch = true;
 
 //Here this function is different form other load Butterfly ones 
 //as it cross check the timestamps and only allows the latest ones
-    async function loadButterfliesFromFirestore() {
-               
-               const q = query(
-               collection(db, CHAR_BUTTERFLY_COLLECTION),
-               where("device", "==", "ipad")
-               );
-               const querySnapshot = await getDocs(q);
+            let currIds = [];
+            let ids =[];
+            async function storeId(id)
+            {
+                ids.push(id);
+            }
+            async function loadButterfliesFromFirestore() {
+                currIds=[];
+                const q = query(
+                collection(db, CHAR_BUTTERFLY_COLLECTION),
+                where("device", "==", "ipad")
+                );
+                const querySnapshot = await getDocs(q);
 
-               querySnapshot.forEach((doc) => {
-                   const data = doc.data();
-                   const sanitizedKeyword = sanitizeInput(data.keyword);
-                   const sanitizedContent = sanitizeInput(data.content);
-                   const sanitizedNickname = sanitizeInput(data.nickname);
-                   storeText(sanitizedNickname,sanitizedKeyword,sanitizedContent);
-                   console.log(butterflyTexts);
-                   createButterflyText(sanitizedKeyword,sanitizedNickname); // Display each butterfly
-               });
-           }
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const sanitizedKeyword = sanitizeInput(data.keyword);
+                    const sanitizedContent = sanitizeInput(data.content);
+                    const sanitizedNickname = sanitizeInput(data.nickname);
+                    const bid = sanitizeInput(data.id);
+                    currIds.push(bid);
+                    if(!ids.includes(bid))
+                   {    
+                        ids.push(bid);
+                        storeText(sanitizedNickname,sanitizedKeyword,sanitizedContent);
+                        createButterflyText(sanitizedKeyword,sanitizedNickname,bid); 
+                
+                    }
+                });
+                clearDeletedButterflies(currIds,ids);
+            }
 
-loadButterfliesFromFirestore();
+            loadButterfliesFromFirestore();
 
-//Function to load butterlfies every 1 second
-setInterval(loadButterfliesFromFirestore, 1000);
+            //Function to load butterlfies every 1 second
+            setInterval(loadButterfliesFromFirestore, 3000);
 
 // --------------------end retrieve the data----------------------
+  
+            function clearDeletedButterflies(current, previous) {
+                // For each item in previous array
+                previous.forEach(item => {
+                    // If item is not in current array (meaning it was deleted)
+                    
+                    if(!current.includes(item)) {
+                      
+                      const cont = document.getElementById(item);
+                      if(cont) {
+                            cont.remove();
+                        }
+                    }
+                })
+            }
 
-// Write to the firebase
-async function addButterflyToFirestore(keyword, content, nickname) {
-    try { 
-        console.log("add to FB");
-        const sanitizedKeyword = sanitizeInput(keyword);
-        const sanitizedContent = sanitizeInput(content);
-        const sanitizedNickname = sanitizeInput(nickname);
-
-        // Reference to the 'chat_butterfly' collection
-        const docRef = await addDoc(collection(db, CHAR_BUTTERFLY_COLLECTION), {
-            keyword: sanitizedKeyword,
-            content: sanitizedContent,
-            nickname:sanitizedNickname
-        });
-
-        console.log("Document written with ID: ", docRef.id);
-    } catch (e) {
-        console.error("Error adding document: ", e);
-    }
-}
 
       </script>
     </body>
