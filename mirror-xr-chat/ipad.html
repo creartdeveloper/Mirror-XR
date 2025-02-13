@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Input Box</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            background-image:url('/Users/chowdhurynurealamsiddiqi/Documents/nur988.github.io/assets/textbox.png');
+           
+        }
+
+        .chat-input-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            resize: vertical;
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        button {
+            background-color: #0084ff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0066cc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="chat-input-container">
+            <textarea id="messageInput" placeholder="Type your message here..."></textarea>
+            <div class="button-container">
+                <button id="sendButton">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+        import { getFirestore, setDoc, doc,addDoc,collection } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDiCIatzcDsnHdX_t-m15S1a8pNlrB2egs",
+            authDomain: "mira-7360b.firebaseapp.com",
+            projectId: "mira-7360b",
+            storageBucket: "mira-7360b.appspot.com",
+            messagingSenderId: "76074103771",
+            appId: "1:76074103771:web:1a2d4ca7e8b5df27a82dfe",
+            measurementId: "G-9YL8FHBDRX"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const CHAT_MESSAGE_COLLECTION = "chat_message";
+
+        // Sanitize the user input
+        function sanitizeInput(input) {
+            const element = document.createElement('div');
+            if (input) {
+                element.innerText = input;
+                return element.innerHTML;
+            }
+            return input;
+        }
+
+        // Function to send message
+        async function sendMessage(text) {
+            try {
+                const sanitizedText = sanitizeInput(text);
+                const docRef = await addDoc(collection(db, CHAT_MESSAGE_COLLECTION), {
+                        id:"3",
+                        text:text
+                    });
+                
+                // Clear the input after successful send
+               
+            } catch (error) {
+                console.error("Error sending message:", error);
+            }
+        }
+
+        // Event listeners
+        document.getElementById('sendButton').addEventListener('click', () => {
+            const messageText = document.getElementById('messageInput').value.trim();
+            if (messageText) {
+                document.getElementById('messageInput').value = '';
+                sendMessage(messageText);
+            }
+        });
+
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                const messageText = e.target.value.trim();
+                if (messageText) {
+                    document.getElementById('messageInput').value = '';
+                    sendMessage(messageText);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -252,12 +252,10 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const storage = getStorage(app);
-let timestamps =[];
-
-const db = getFirestore(app); // Initialize Firestore
-const CHAR_BUTTERFLY_COLLECTION = "chat_butterfly";
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const CHAT_MESSAGE_COLLECTION = "chat_message";
+    const CHAR_BUTTERFLY_COLLECTION = "chat_butterfly";
 // --------------------end firebase initialise----------------------
 
 
