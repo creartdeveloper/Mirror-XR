@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mirror App</title>
+    <style>
+       body {
+            background: linear-gradient(180deg, 
+            #1E1B38 0%,      /* Dark purple at top */
+            #2B1B4B 20%,     /* Deep purple */
+            #4B2C76 40%,     /* Medium purple */
+            #7B4FA9 60%,     /* Lighter purple */
+            #CC8FD8 80%,     /* Pink-purple */
+            #FFB7E7 100%     /* Pink at bottom */
+);
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+        }
+        .logo {
+            width: 200px;
+            margin-bottom: 3rem;
+        }
+
+        .main-container {
+            margin-left: 35%;
+            width:450px;
+            height:650px;
+            display: flex;
+            flex-direction: column;
+            border-radius: 15px;
+            align-items: center;
+            background-image: url('/Users/chowdhurynurealamsiddiqi/Documents/nur988.github.io/Mirror XR Mira iPad UI/chat-bg.jpg');
+            background-size: cover; 
+            background-position: center;
+            background-repeat: no-repeat;
+            border-color: white;
+        
+        }
+
+        .message-box {
+            margin-top: 20%;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 24px;
+            width: 70%;
+            height: 280px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            background-image: url('/Users/chowdhurynurealamsiddiqi/Documents/nur988.github.io/Mirror XR Mira iPad UI/text-box.png');
+            background-size: cover; 
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: transparent;
+        }
+        .msg-text-box{
+          padding: 10px;
+          border:None;
+          margin-top:18% ;
+          width:95%;
+          height:50%;
+          background-color: transparent;
+          overflow: hidden;
+        }
+        .msg-text-box:focus {
+            border: none;
+            outline: none;
+            /* Optional: if you want to completely remove any focus styles */
+            box-shadow: none;
+        }
+
+        .pebble-section {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            width:60%;
+            height:10%;
+            background:transparent;
+            border-radius: 50px;
+            color:transparent;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .pebble-icon {
+            width: 150px;
+            height: 60px;
+        }
+        .kitty-icon{
+            width: 100px;
+            height: 70px;
+        }
+        .pebble-button{
+            background-color: transparent;
+            border:None;
+            
+        }
+        .pebble-button:focus {
+            outline: none;
+        }
+        .pebble-button:hover {
+            transform: scale(1.1);  /* Slightly larger on hover */
+            filter: brightness(1.1);  /* Slightly brighter on hover */
+        }
+
+        .pebble-button:active {
+            transform: scale(0.9);  /* Slight scale down when clicked */
+        }
+
+        .magical-items {
+            width: 80%;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 1rem;
+        }
+
+        .items-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .item {
+            width: 100px;
+            height: 100px;
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .item:hover {
+            transform: scale(1.05);
+        }
+
+        .item.hidden {
+            opacity: 0;
+            transform: scale(0);
+            width: 0;
+            margin: 0;
+        }
+
+        .item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .footer {
+            margin-top:-60px;
+            width:420px;
+            height:70px;
+            border-radius: 15px;
+            background-size: cover; 
+            background-position: center;
+            background-color: transparent;
+            background-image: url('/Users/chowdhurynurealamsiddiqi/Documents/nur988.github.io/Mirror XR Mira iPad UI/Pick-a-Magical-Item.png');
+        }
+
+        .items-container {
+            transition: gap 0.3s ease;
+        }
+
+        .items-container.single-item {
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+
+        <div class="message-box">
+            <textarea maxlength="200" placeholder="Type Message Here" class="msg-text-box"></textarea>
+        </div>
+
+        <div class="pebble-section">
+            <button class="pebble-button">
+                <img src="/Users/chowdhurynurealamsiddiqi/Documents/nur988.github.io/Mirror XR Mira iPad UI/iPad-IU-Pebble-Send.png" 
+                     class="pebble-icon">
+            </button>
+            <img src="/Users/chowdhurynurealamsiddiqi/Documents/nur988.github.io/Mirror XR Mira iPad UI/iPad-IU-Dewdrop.png"  class="kitty-icon">
+        </div>
+
+        <div class="magical-items">
+           
+            <div class="items-container">
+                <div class="item" data-item="hourglass">
+                    <img src="/Users/chowdhurynurealamsiddiqi/Documents/nur988.github.io/Mirror XR Mira iPad UI/Hourglass.png" alt="Hourglass">
+                </div>
+                <div class="item" data-item="books">
+                    <img src="/Users/chowdhurynurealamsiddiqi/Documents/nur988.github.io/Mirror XR Mira iPad UI/Book.png" alt="Books">
+                </div>
+                <div class="item" data-item="harp">
+                    <img src="/Users/chowdhurynurealamsiddiqi/Documents/nur988.github.io/Mirror XR Mira iPad UI/Harp.png" alt="Magical Harp">
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+        import { getStorage } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-storage.js";
+        import { getFirestore, collection, addDoc, getDocs, writeBatch,Timestamp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+    
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDiCIatzcDsnHdX_t-m15S1a8pNlrB2egs",
+            authDomain: "mira-7360b.firebaseapp.com",
+            projectId: "mira-7360b",
+            storageBucket: "mira-7360b.appspot.com",
+            messagingSenderId: "76074103771",
+            appId: "1:76074103771:web:1a2d4ca7e8b5df27a82dfe",
+            measurementId: "G-9YL8FHBDRX"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const storage = getStorage(app);
+        const db = getFirestore(app);
+        const CHAR_MESSAGE_COLLECTION = "chat_box_1";
+        
+        const sendButton = document.querySelector('.pebble-button');
+        const textArea = document.querySelector('.msg-text-box');
+
+        sendButton.addEventListener('click', function() {
+            const message = textArea.value.trim();
+            if (message) {
+                addChat(message);
+                textArea.value = '';
+            }
+        });
+        
+        
+        
+        
+        document.querySelectorAll('.item').forEach(item => {
+            item.addEventListener('click', function() {
+                // If item is already selected, do nothing
+                if (this.classList.contains('selected')) {
+                    return;
+                }
+
+                const container = document.querySelector('.items-container');
+                const imgElement = this.querySelector('img');
+                const selectedItem = this.getAttribute('data-item');
+                
+                // Change image source based on which item was clicked
+                switch(selectedItem) {
+                    case 'hourglass':
+                        imgElement.src = "/Users/chowdhurynurealamsiddiqi/Documents/nur988.github.io/Mirror XR Mira iPad UI/Hourglass-Selected.png";
+                        break;
+                    case 'books':
+                        imgElement.src = "/Users/chowdhurynurealamsiddiqi/Documents/nur988.github.io/Mirror XR Mira iPad UI/Book-Selected.png";
+                        break;
+                    case 'harp':
+                        imgElement.src = "/Users/chowdhurynurealamsiddiqi/Documents/nur988.github.io/Mirror XR Mira iPad UI/Harp-Selected.png";
+                        break;
+                }
+                
+                // Hide all other items
+                document.querySelectorAll('.item').forEach(otherItem => {
+                    if (otherItem !== this) {
+                        otherItem.classList.add('hidden');
+                    }
+                });
+
+                // Add selected class to clicked item.
+                this.classList.add('selected');
+                
+                // Add single-item class to container for centering
+                container.classList.add('single-item');
+
+                // Store selected item in session
+                sessionStorage.setItem('selectedMagicalItem', selectedItem);
+            });
+        });
+
+        async function addChat(text) {
+            try { 
+                    
+                    // Create a new document with auto-generated ID in the collection
+                    const docRef = await addDoc(collection(db, CHAR_MESSAGE_COLLECTION), {
+                        device: "ipad-1",
+                        message: text,
+                        timestamp:Timestamp.now()
+                    });
+
+                } catch (e) {
+                    console.error("Error adding document: ", e);
+                    throw e; // Propagate error to caller
+                }
+            }
+
+        // Check if there's a previously selected item on page load
+       
+    </script>
+</body>
+</html>

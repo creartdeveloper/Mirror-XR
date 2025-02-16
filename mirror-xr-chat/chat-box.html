@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            background: #00FF00;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(2, 400px);
+            gap: 50px;
+            padding: 50px;
+            background-color: transparent;
+            border-radius: 20px;
+        }
+
+        .text-display {
+            position: relative;
+            height: 330px;
+            width:460px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 15px;
+            word-wrap: break-word;
+            transition: transform 0.3s ease;
+            cursor: default;
+            word-wrap: break-word;
+        }
+
+        .text-display:nth-child(1) {
+            background-image: url('assets/chat-boxes/Resolume-IU-Dewdrop-M.gif');
+        }
+
+        .text-display:nth-child(2) {
+            background-image: url('assets/chat-boxes/Resolume-IU-Pebble-M.gif');
+        }
+
+        .text-display:nth-child(3) {
+            background-image: url('assets/chat-boxes/Resolume-IU-Twinkle-M.gif');
+        }
+
+        .text-display:nth-child(4) {
+            background-image: url('assets/chat-boxes/Resolume-IU-Whimsy-M.gif');
+        }
+
+
+        .text-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 400px;
+            height: 200px;
+            padding-left: 30px;
+            color: black;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 500;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            word-wrap: break-word;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="text-display">
+            <div id ="text-1"class="text-content">
+            </div>
+        </div>
+        <div class="text-display">
+            <div id ="text-2" class="text-content">
+            </div>
+        </div>
+        <div class="text-display">
+            <div id ="text-3" class="text-content">
+            </div>
+        </div>
+        <div class="text-display">
+            <div id ="text-4" class="text-content">
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Import Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+        import { getFirestore, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDiCIatzcDsnHdX_t-m15S1a8pNlrB2egs",
+            authDomain: "mira-7360b.firebaseapp.com",
+            projectId: "mira-7360b",
+            storageBucket: "mira-7360b.appspot.com",
+            messagingSenderId: "76074103771",
+            appId: "1:76074103771:web:1a2d4ca7e8b5df27a82dfe",
+            measurementId: "G-9YL8FHBDRX"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Function to fetch latest message from a collection
+        async function getLatestMessage(collectionName) {
+            try {
+                const q = query(
+                    collection(db, collectionName),
+                    orderBy("timestamp", "desc"),
+                    limit(1)  
+                );
+
+                const querySnapshot = await getDocs(q);
+                if (!querySnapshot.empty) {
+                    return querySnapshot.docs[0].data().message || 'No message found';
+                }
+                return 'No messages yet';
+            } catch (error) {
+                
+            }
+        }
+
+        // Function to update all text boxes
+        async function updateAllTextBoxes() {
+            const collections = ['chat_box_1', 'chat_box_2', 'chat_box_3', 'chat_box_4'];
+            
+            for (let i = 0; i < collections.length; i++) {
+                const textElement = document.getElementById(`text-${i + 1}`);
+              
+                
+                try {
+                    const message = await getLatestMessage(collections[i]);
+                    if(!textElement.textContent||textElement.textContent!=message)
+                   { 
+                    textElement.textContent = message;
+                    }
+                } catch (error) {
+                   
+                }
+            }
+        }
+
+        // Initial update
+        updateAllTextBoxes();
+
+      
+        setInterval(updateAllTextBoxes, 2000);
+    </script>
+
+
+
+</body>
+</html>
+
