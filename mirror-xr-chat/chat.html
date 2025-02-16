@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mirror App</title>
+    <style>
+
+        .logo {
+            width: 200px;
+            margin-bottom: 3rem;
+        }
+
+        .main-container {
+            margin-left: 35%;
+            width: 100%;
+            max-width: 450px;
+            display: flex;
+            flex-direction: column;
+            border-radius: 15px;
+            align-items: center;
+            gap: 2rem;
+            background-image: url('/Users/chowdhurynurealamsiddiqi/Documents/nur988.github.io/Mirror XR Mira iPad UI/chat-bg.jpg');
+            background-size: cover; 
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .message-box {
+            margin-top: 20%;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 24px;
+            width: 70%;
+            height: 280px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            background-image: url('/Users/chowdhurynurealamsiddiqi/Documents/nur988.github.io/Mirror XR Mira iPad UI/text-box.png');
+            background-size: cover; 
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: transparent;
+        }
+        .msg-text-box{
+          padding: 10px;
+          border:None;
+          margin-top:18% ;
+          width:95%;
+          height:50%;
+          background-color: transparent;
+          overflow: hidden;
+        }
+        .msg-text-box:focus {
+            border: none;
+            outline: none;
+            /* Optional: if you want to completely remove any focus styles */
+            box-shadow: none;
+        }
+
+        .pebble-section {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            width:50%;
+            height:50%;
+            background:transparent;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .pebble-icon {
+            width: 150px;
+            height: 60px;
+        }
+        .pebble-button{
+            background-color: transparent;
+            border:None;
+            
+        }
+        .pebble-button:focus {
+            outline: none;
+        }
+        .pebble-button:hover {
+            transform: scale(1.1);  /* Slightly larger on hover */
+            filter: brightness(1.1);  /* Slightly brighter on hover */
+        }
+
+        .pebble-button:active {
+            transform: scale(0.9);  /* Slight scale down when clicked */
+        }
+
+        .magical-items {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 1rem;
+        }
+
+        .items-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .item {
+            width: 100px;
+            height: 100px;
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .item:hover {
+            transform: scale(1.05);
+        }
+
+        .item.hidden {
+            opacity: 0;
+            transform: scale(0);
+            width: 0;
+            margin: 0;
+        }
+
+        .item.selected {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .title {
+            color: white;
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .items-container {
+            transition: gap 0.3s ease;
+        }
+
+        .items-container.single-item {
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+
+        <div class="message-box">
+            <textarea placeholder="Type Message Here" class="msg-text-box"></textarea>
+        </div>
+
+        <div class="pebble-section">
+            <button class="pebble-button">
+                <img src="/Users/chowdhurynurealamsiddiqi/Documents/nur988.github.io/Mirror XR Mira iPad UI/iPad-IU-Pebble-Send.png" 
+                >
+            </button>
+            <img src="/Users/chowdhurynurealamsiddiqi/Documents/nur988.github.io/Mirror XR Mira iPad UI/iPad-IU-Dewdrop.png" class="pebble-icon">
+        </div>
+
+        <div class="magical-items">
+            <div class="title">Pick a Magical Item</div>
+            <div class="items-container">
+                <div class="item" data-item="hourglass">
+                    <img src="/Users/chowdhurynurealamsiddiqi/Documents/nur988.github.io/Mirror XR Mira iPad UI/Hourglass-Selected.png" alt="Hourglass">
+                </div>
+                <div class="item" data-item="books">
+                    <img src="/Users/chowdhurynurealamsiddiqi/Documents/nur988.github.io/Mirror XR Mira iPad UI/Book-Selected.png" alt="Books">
+                </div>
+                <div class="item" data-item="harp">
+                    <img src="/Users/chowdhurynurealamsiddiqi/Documents/nur988.github.io/Mirror XR Mira iPad UI/Harp-Selected.png" alt="Magical Harp">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.item').forEach(item => {
+            item.addEventListener('click', function() {
+                // If item is already selected, do nothing
+                if (this.classList.contains('selected')) {
+                    return;
+                }
+
+                const container = document.querySelector('.items-container');
+                
+                // Hide all other items
+                document.querySelectorAll('.item').forEach(otherItem => {
+                    if (otherItem !== this) {
+                        otherItem.classList.add('hidden');
+                    }
+                });
+
+                // Add selected class to clicked item
+                this.classList.add('selected');
+                
+                // Add single-item class to container for centering
+                container.classList.add('single-item');
+
+                // Store selected item in session
+                const selectedItem = this.getAttribute('data-item');
+                sessionStorage.setItem('selectedMagicalItem', selectedItem);
+            });
+        });
+
+        // Check if there's a previously selected item on page load
+       
+    </script>
+</body>
+</html>
