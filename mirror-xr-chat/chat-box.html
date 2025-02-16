@@ -31,6 +31,19 @@
             transition: transform 0.3s ease;
             cursor: default;
             word-wrap: break-word;
+            opacity:0;
+        }
+        #text-display-1{
+            opacity:0;
+        }
+        #text-display-2{
+            opacity:0;
+        }
+        #text-display-3{
+            opacity:0;
+        }
+        #text-display-4{
+            opacity:0;
         }
 
         .text-display:nth-child(1) {
@@ -52,10 +65,9 @@
 
         .text-content {
             position: absolute;
-            top: 0;
-            left: 0;
             width: 400px;
             height: 200px;
+            padding-top: 30px;
             padding-left: 30px;
             color: black;
             border-radius: 50px;
@@ -74,19 +86,19 @@
 </head>
 <body>
     <div class="container">
-        <div class="text-display">
+        <div id = "text-display-1"class="text-display">
             <div id ="text-1"class="text-content">
             </div>
         </div>
-        <div class="text-display">
+        <div  id="text-display-2" class="text-display">
             <div id ="text-2" class="text-content">
             </div>
         </div>
-        <div class="text-display">
+        <div id = "text-display-3" class="text-display">
             <div id ="text-3" class="text-content">
             </div>
         </div>
-        <div class="text-display">
+        <div id = "text-display-4" class="text-display">
             <div id ="text-4" class="text-content">
             </div>
         </div>
@@ -111,6 +123,8 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        let timestamp ;
+        let lastUpdates=[];
 
         // Function to fetch latest message from a collection
         async function getLatestMessage(collectionName) {
@@ -123,9 +137,13 @@
 
                 const querySnapshot = await getDocs(q);
                 if (!querySnapshot.empty) {
-                    return querySnapshot.docs[0].data().message || 'No message found';
+                    
+                    return querySnapshot.docs[0].data().message;
                 }
-                return 'No messages yet';
+                else {
+                    return null;
+                }
+               
             } catch (error) {
                 
             }
@@ -137,25 +155,47 @@
             
             for (let i = 0; i < collections.length; i++) {
                 const textElement = document.getElementById(`text-${i + 1}`);
+                const textDisplay = document.getElementById(`text-display-${i+1}`);
               
                 
                 try {
                     const message = await getLatestMessage(collections[i]);
-                    if(!textElement.textContent||textElement.textContent!=message)
+                    if(message&&(!textElement.textContent || textElement.textContent!=message))
                    { 
+                    
                     textElement.textContent = message;
-                    }
+                    textDisplay.style.opacity = 1;
+                    textDisplay.style.transition = "opacity 0.8s ease-in-out";
+                    lastUpdates[i] = Date.now();
+                   
+                }
                 } catch (error) {
                    
                 }
             }
         }
+        function checkTextBoxesActivity()
+        {
+             
+            const timeLimit = 12000;
+            const currentTime = Date.now();
+            for(let i=0;i<4;i++)
+             {
+                if(currentTime-lastUpdates[i]>timeLimit)
+                {
+                    const textDisplay = document.getElementById(`text-display-${i+1}`);
+                    textDisplay.style.opacity = 0;
+                }
+             }
+        }
 
         // Initial update
         updateAllTextBoxes();
+        checkTextBoxesActivity();
+        setInterval(checkTextBoxesActivity,1000);
 
       
-        setInterval(updateAllTextBoxes, 2000);
+        setInterval(updateAllTextBoxes, 1000);
     </script>
 
 
