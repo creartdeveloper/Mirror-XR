@@ -164,10 +164,10 @@
 
         <div class="pebble-section">
             <button class="pebble-button">
-                <img src="assets/iPad-IU-Pebble-Send.png" 
+                <img src="assets/iPad-IU-Twinkle-Send.png" 
                      class="pebble-icon">
             </button>
-            <img src="assets/iPad-IU-Dewdrop.png"  class="kitty-icon">
+            <img src="assets/iPad-IU-Twinkle.png"  class="kitty-icon">
         </div>
 
         <div class="magical-items">
@@ -207,7 +207,7 @@
         const app = initializeApp(firebaseConfig);
         const storage = getStorage(app);
         const db = getFirestore(app);
-        const CHAR_MESSAGE_COLLECTION = "chat_box_1";
+        const CHAR_MESSAGE_COLLECTION = "chat_box_3";
         
         const sendButton = document.querySelector('.pebble-button');
         const textArea = document.querySelector('.msg-text-box');
@@ -270,7 +270,7 @@
                     
                     // Create a new document with auto-generated ID in the collection
                     const docRef = await addDoc(collection(db, CHAR_MESSAGE_COLLECTION), {
-                        device: "ipad-1",
+                        device: "ipad-3",
                         message: text,
                         timestamp:Timestamp.now()
                     });
