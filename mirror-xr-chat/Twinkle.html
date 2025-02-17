@@ -248,6 +248,8 @@
                         imgElement.src = "assets/Harp-Selected.png";
                         break;
                 }
+                // Storing the selected item to Firebase;
+                addSelectedItem(selectedItem);
                 
                 // Hide all other items
                 document.querySelectorAll('.item').forEach(otherItem => {
