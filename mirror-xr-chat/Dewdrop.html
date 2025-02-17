@@ -208,6 +208,8 @@
         const storage = getStorage(app);
         const db = getFirestore(app);
         const CHAR_MESSAGE_COLLECTION = "chat_box_1";
+        const MAGICAL_ITEM_COLLECTION = "magical_item";
+        const PAGE_TYPE = "dewdrop";
         
         const sendButton = document.querySelector('.pebble-button');
         const textArea = document.querySelector('.msg-text-box');
@@ -246,6 +248,8 @@
                         imgElement.src = "assets/Harp-Selected.png";
                         break;
                 }
+                // Storing the selected item to Firebase;
+                addSelectedItem(selectedItem);
                 
                 // Hide all other items
                 document.querySelectorAll('.item').forEach(otherItem => {
@@ -265,6 +269,24 @@
             });
         });
 
+        
+        
+        async function addSelectedItem(item)
+        {
+            try { 
+                    
+                    // Create a new document with auto-generated ID in the collection
+                    const docRef = await addDoc(collection(db, MAGICAL_ITEM_COLLECTION), {
+                        page_type:PAGE_TYPE,
+                        item:item,
+                        timestamp:Timestamp.now()
+                    });
+
+                } catch (e) {
+                    console.error("Error adding document: ", e);
+                    throw e; // Propagate error to caller
+                }
+        }
         async function addChat(text) {
             try { 
                     

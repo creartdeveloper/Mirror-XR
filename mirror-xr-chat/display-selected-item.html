@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+
+#main-container
+{
+    display:flex;
+    flex-direction: column;
+    gap:10px;
+    margin-left:35%;
+    
+}
+#dewdrop{
+    background-color: rgb(178, 178, 190);
+    width: 500px;
+    height: 100px;
+}
+#pebble{
+    background-color: rgb(190, 157, 157);
+    width: 500px;
+    height: 100px;
+}
+#twinkle{
+    background-color: rgb(148, 172, 159);
+    width: 500px;
+    height: 100px;
+}
+#whimsy{
+    background-color: rgb(141, 162, 153);
+    width: 500px;
+    height: 100px;
+}
+
+
+
+
+
+    </style>
+</head>
+<body>
+ <div id = "main-container">
+    <div id="dewdrop">
+
+    </div>
+    <div id="pebble">
+        
+    </div>
+    <div id="twinkle">
+        
+    </div>
+    <div id="whimsy">
+        
+    </div>
+
+
+
+ </div>   
+
+
+
+<script type="module">
+
+ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+        import { getStorage } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-storage.js";
+        import { getFirestore, collection, query, orderBy, limit, getDocs,where } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDiCIatzcDsnHdX_t-m15S1a8pNlrB2egs",
+            authDomain: "mira-7360b.firebaseapp.com",
+            projectId: "mira-7360b",
+            storageBucket: "mira-7360b.appspot.com",
+            messagingSenderId: "76074103771",
+            appId: "1:76074103771:web:1a2d4ca7e8b5df27a82dfe",
+            measurementId: "G-9YL8FHBDRX"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const storage = getStorage(app);
+        const db = getFirestore(app);
+       
+        const MAGICAL_ITEM_COLLECTION = "magical_item";
+        const PAGE_TYPES = ["dewdrop","twinkle","pebble","whimsy"];
+
+
+
+
+        
+        async function loadSelectedItem() {
+    for(let i = 0; i < PAGE_TYPES.length; i++) {
+        const element = document.getElementById(PAGE_TYPES[i]);
+        
+        try {
+            const q = query(
+                collection(db, MAGICAL_ITEM_COLLECTION),
+                where("page_type","==",PAGE_TYPES[i]),
+                orderBy("timestamp", "desc"),
+                limit(1)  
+            );
+           
+            const querySnapshot = await getDocs(q);
+            
+            if (!querySnapshot.empty) {
+                const docData = querySnapshot.docs[0].data();
+                
+                const item = docData.item;
+                
+                if (element) {
+                    element.textContent = `The Selected Item for ${PAGE_TYPES[i]} is ${item}`;
+                }
+            } else {
+                
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+}
+    setInterval(loadSelectedItem,1000);
+
+</script>
+
+</body>
+</html>
