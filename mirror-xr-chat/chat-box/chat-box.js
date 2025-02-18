@@ -23,10 +23,10 @@ const displayUpdateTimes = {};
 
 // Constants that don't need to be recreated
 const imageObject = {
-    'dewdrop': 'assets/chat-boxes/Resolume-IU-Dewdrop-M.gif',
-    'whimsy': 'assets/chat-boxes/Resolume-IU-Whimsy-M.gif',
-    'pebble': 'assets/chat-boxes/Resolume-IU-Pebble-M.gif',
-    'twinkle': 'assets/chat-boxes/Resolume-IU-Twinkle-M.gif'
+    'dewdrop': '../assets/chat-boxes/Resolume-IU-Dewdrop-M.gif',
+    'whimsy': '../assets/chat-boxes/Resolume-IU-Whimsy-M.gif',
+    'pebble': '../assets/chat-boxes/Resolume-IU-Pebble-M.gif',
+    'twinkle': '../assets/chat-boxes/Resolume-IU-Twinkle-M.gif'
 };
 
 const chatBoxToType = {
