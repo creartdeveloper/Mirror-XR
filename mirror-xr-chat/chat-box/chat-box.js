@@ -1,7 +1,7 @@
 
 // Import Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
-import { getFirestore, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+import { getFirestore, collection, query, orderBy, limit, getDocs,deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -166,6 +166,29 @@ function createTextDisplays() {
         container.appendChild(displayDiv);
     }
 }
+async function clearAllCollections() {
+    const collections = ['chat_box_1', 'chat_box_2', 'chat_box_3', 'chat_box_4'];
+    
+    for (const collectionName of collections) {
+        try {
+            const q = query(collection(db, collectionName));
+            const snapshot = await getDocs(q);
+            
+            // Delete each document in the collection
+            const deletePromises = snapshot.docs.map(doc => 
+                deleteDoc(doc.ref)
+            );
+            
+            await Promise.all(deletePromises);
+            console.log(`Cleared collection: ${collectionName}`);
+        } catch (error) {
+            console.error(`Error clearing ${collectionName}:`, error);
+        }
+    }
+}
+
+// Call this when page loads
+window.addEventListener('load', clearAllCollections);
 
 // Initialize and start updates
 createTextDisplays();
