@@ -193,4 +193,4 @@ window.addEventListener('load', clearAllCollections);
 // Initialize and start updates
 createTextDisplays();
 updateAllTextBoxes();
-setInterval(updateAllTextBoxes, 1000);
+(updateAllTextBoxes, 1000);
