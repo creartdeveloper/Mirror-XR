@@ -173,14 +173,14 @@
         <div class="magical-items">
            
             <div class="items-container">
-                <div class="item" data-item="hourglass">
-                    <img src="assets/Hourglass.png" alt="Hourglass">
+                <div class="item" data-item="moon">
+                    <img src="UI/4.1.png" alt="moon">
                 </div>
-                <div class="item" data-item="books">
-                    <img src="assets/Book.png" alt="Books">
+                <div class="item" data-item="book">
+                    <img src="UI/4.2.png" alt="Books">
                 </div>
                 <div class="item" data-item="harp">
-                    <img src="assets/Harp.png" alt="Magical Harp">
+                    <img src="UI/4.3.png" alt="Magical Harp">
                 </div>
             </div>
         </div>
@@ -239,14 +239,14 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/fireba
                 
                 // Change image source based on which item was clicked
                 switch(selectedItem) {
-                    case 'hourglass':
-                        imgElement.src = "assets/Hourglass-Selected.png";
+                    case 'moon':
+                        imgElement.src = "UI/Colourful/C 4.1.png";
                         break;
-                    case 'books':
-                        imgElement.src = "assets/Book-Selected.png";
+                    case 'book':
+                        imgElement.src = "UI/Colourful/C 4.2.png";
                         break;
                     case 'harp':
-                        imgElement.src = "assets/Harp-Selected.png";
+                        imgElement.src = "UI/Colourful/C 4.3.png";
                         break;
                 }
                 // Storing the selected item to Firebase;
