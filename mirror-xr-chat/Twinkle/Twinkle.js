@@ -16,9 +16,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 const db = getFirestore(app);
-const CHAR_MESSAGE_COLLECTION = "chat_box_1";
+const CHAR_MESSAGE_COLLECTION = "chat_box_3";
 const MAGICAL_ITEM_COLLECTION = "magical_item";
-const PAGE_TYPE = "dewdrop";
+const PAGE_TYPE = "twinkle";
 
 const sendButton = document.querySelector('.pebble-button');
 const textArea = document.querySelector('.msg-text-box');
@@ -47,14 +47,14 @@ document.querySelectorAll('.item').forEach(item => {
         
         // Change image source based on which item was clicked
         switch(selectedItem) {
-            case 'cup':
-                imgElement.src = "UI/Colourful/C 1.1.png";
+            case 'feather':
+                imgElement.src = "UI/Colourful/C 3.1.png";
                 break;
-            case 'broken-plate':
-                imgElement.src = "UI/Colourful/C 1.2.png";
+            case 'mirror':
+                imgElement.src = "UI/Colourful/C 3.2.png";
                 break;
-            case 'broken-bowl':
-                imgElement.src = "UI/Colourful/C 1.3.png";
+            case 'book':
+                imgElement.src = "UI/Colourful/C 3.3.png";
                 break;
         }
         // Storing the selected item to Firebase;
@@ -78,9 +78,23 @@ document.querySelectorAll('.item').forEach(item => {
     });
 });
 
+async function addChat(text) {
+    try { 
+            
+            // Create a new document with auto-generated ID in the collection
+            const docRef = await addDoc(collection(db, CHAR_MESSAGE_COLLECTION), {
+                device: "ipad-3",
+                message: text,
+                timestamp:Timestamp.now()
+            });
 
+        } catch (e) {
+            console.error("Error adding document: ", e);
+            throw e; // Propagate error to caller
+        }
+    }
 
-async function addSelectedItem(item)
+    async function addSelectedItem(item)
 {
     try { 
             
@@ -95,22 +109,7 @@ async function addSelectedItem(item)
             console.error("Error adding document: ", e);
             throw e; // Propagate error to caller
         }
-}
-async function addChat(text) {
-    try { 
-            
-            // Create a new document with auto-generated ID in the collection
-            const docRef = await addDoc(collection(db, CHAR_MESSAGE_COLLECTION), {
-                device: "ipad-2",
-                message: text,
-                timestamp:Timestamp.now()
-            });
+}    
 
-        } catch (e) {
-            console.error("Error adding document: ", e);
-            throw e; // Propagate error to caller
-        }
-    }
-
-
+// Check if there's a previously selected item on page load
 

@@ -1,25 +1,25 @@
 
 body {
     background: #00FF00;
-    min-height: 100vh;
     margin: 0;
-    display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .chat-container {
     display: grid;
-    grid-template-columns: 400px 400px 100px 400px 400px;
-    padding: 50px;
+    grid-template-columns: 400px 400px 200px 400px 400px;
+    gap: 20px;
+    padding: 20px;
     background-color: transparent;
     border-radius: 20px;
 }
 
+
 .text-display {
     position: relative;
-    height: 320px;
-    width:420px;
+    height: 300px;
+    width: 400px;  /* Reduced from 420px */
     background-size: cover;
     background-position: center;
     border-radius: 15px;
@@ -27,7 +27,7 @@ body {
     transition: transform 0.3s ease;
     cursor: default;
     word-wrap: break-word;
-    background-image: url('./assets/chat-boxes/Resolume-IU-Dewdrop-M.gif');
+   background-image: url('../assets/chat-boxes/Resolume-IU-Dewdrop-M.gif');
 }
 
 .text-content {
@@ -52,4 +52,9 @@ body {
     word-wrap: break-word;
     z-index: 1000;
 }
+
+.text-display:nth-child(4n+1) { grid-column: 1; }  /* First element */
+.text-display:nth-child(4n+2) { grid-column: 2; }  /* Second element */
+.text-display:nth-child(4n+3) { grid-column: 4; }  /* Third element */
+.text-display:nth-child(4n+4) { grid-column: 5; }  /* Fourth element */
 

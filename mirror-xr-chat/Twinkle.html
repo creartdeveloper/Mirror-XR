@@ -153,6 +153,38 @@
         .items-container.single-item {
             justify-content: center;
         }
+
+        .emoji-container {
+        display: flex;
+        gap: 1rem;
+        background-color:transparent;
+        border-radius: 0.5rem;
+    }
+
+        .emoji-btn {
+            font-size: 3rem;
+            padding: 0.5rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .emoji-btn:hover {
+            transform: scale(1.2);
+        }
+        .emoji-btn:active {
+            transform: scale(0.95);
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+        }
+
+        /* Class for selected emoji */
+        .emoji-selected {
+            transform: scale(1.60);
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body>
@@ -168,6 +200,13 @@
                      class="pebble-icon">
             </button>
             <img src="assets/iPad-IU-Twinkle.png"  class="kitty-icon">
+        </div>
+        <div class="emoji-container">
+            <button class="emoji-btn">😄</button>
+            <button class="emoji-btn">😭</button>
+            <button class="emoji-btn">☺️</button>
+            <button class="emoji-btn">😕</button>
+            <button class="emoji-btn">🥰</button>
         </div>
 
         <div class="magical-items">
@@ -210,6 +249,7 @@
         const CHAR_MESSAGE_COLLECTION = "chat_box_3";
         const MAGICAL_ITEM_COLLECTION = "magical_item";
         const PAGE_TYPE = "twinkle";
+        const EMOJI_COLLECTION = "emoji";
         
         const sendButton = document.querySelector('.pebble-button');
         const textArea = document.querySelector('.msg-text-box');
@@ -268,6 +308,38 @@
                 sessionStorage.setItem('selectedMagicalItem', selectedItem);
             });
         });
+        document.querySelectorAll('.emoji-btn').forEach(button => {
+            button.addEventListener('click', async function() {
+                // // Remove selected class from all buttons
+                // document.querySelectorAll('.emoji-btn').forEach(btn => {
+                //     btn.classList.remove('emoji-selected');
+                // });
+                
+                // // Add selected class to clicked button
+                // this.classList.add('emoji-selected');
+                
+                // Get emoji index and content
+                const emojiIndex = this.getAttribute('data-index');
+                const emojiContent = this.textContent;
+
+                try {
+                    // Create data object for Firestore
+                    const emojiData = {
+                        emoji: emojiContent,
+                        timestamp: Timestamp.now(),
+                        pageType: PAGE_TYPE
+                    };
+
+                    // Add document to Firestore
+                    const docRef = await addDoc(collection(db, EMOJI_COLLECTION), emojiData);
+                    console.log("Emoji recorded with ID: ", docRef.id);
+                } catch (error) {
+                    console.error("Error adding emoji to Firestore: ", error);
+                }
+            });
+        });
+
+        
 
         async function addChat(text) {
             try { 

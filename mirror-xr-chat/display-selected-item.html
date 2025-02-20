@@ -17,27 +17,27 @@
 }
 #dewdrop{
     background-color: rgb(178, 178, 190);
-    width: 600px;
-    font-size: 35px;
+    width: 750px;
     height: 100px;
+    font-size: 30px;
 }
 #pebble{
     background-color: rgb(190, 157, 157);
-    width: 600px;
-    font-size: 35px;
+    width: 750px;
     height: 100px;
+    font-size: 30px;
 }
 #twinkle{
     background-color: rgb(148, 172, 159);
-    width: 600px;
-    font-size: 35px;
+    width: 750px;
     height: 100px;
+    font-size: 30px;
 }
 #whimsy{
     background-color: rgb(141, 162, 153);
-    width: 600px;
-    font-size: 35px;
+    width: 750px;
     height: 100px;
+    font-size: 30px;
 }
 
 
@@ -69,7 +69,7 @@
 
 <script type="module">
 
- import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
         import { getStorage } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-storage.js";
         import { getFirestore, collection, query, orderBy, limit, getDocs,where } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
@@ -89,43 +89,138 @@
        
         const MAGICAL_ITEM_COLLECTION = "magical_item";
         const PAGE_TYPES = ["dewdrop","twinkle","pebble","whimsy"];
+        const EMOJI_COLLECTION = "emoji";
 
 
 
 
         
-        async function loadSelectedItem() {
-    for(let i = 0; i < PAGE_TYPES.length; i++) {
-        const element = document.getElementById(PAGE_TYPES[i]);
         
-        try {
-            const q = query(
-                collection(db, MAGICAL_ITEM_COLLECTION),
-                where("page_type","==",PAGE_TYPES[i]),
-                orderBy("timestamp", "desc"),
-                limit(1)  
-            );
-           
-            const querySnapshot = await getDocs(q);
+    // Keep track of last emoji and its timestamp for each page type
+    const emojiStates = {
+        dewdrop: { emoji: null, timestamp: null },
+        twinkle: { emoji: null, timestamp: null },
+        pebble: { emoji: null, timestamp: null },
+        whimsy: { emoji: null, timestamp: null }
+    };
+
+    // Function to check and filter emojis based on time
+        async function checkAndCleanEmojis() {
+            const currentTime = new Date();
             
-            if (!querySnapshot.empty) {
-                const docData = querySnapshot.docs[0].data();
+            
+            for(let i = 0; i < PAGE_TYPES.length; i++) {
+                const pageType = PAGE_TYPES[i];
+               
                 
-                const item = docData.item;
-                
-                if (element && item) {
-                    element.textContent = `${PAGE_TYPES[i]}.....${item}`;
-                }
-            } else {
-                
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
-}
-    setInterval(loadSelectedItem,1000);
+                if (emojiStates[pageType].timestamp) {
+                    // Convert timestamp to milliseconds for comparison
+                    const emojiTime = emojiStates[pageType].timestamp;
+                    const timeDifference = (currentTime - emojiTime) ;
+                   
 
+                    
+                   
+                  
+                    if (timeDifference >= 12000) {
+                        // Clear emoji state if it's past 12 seconds
+                        //emojiStates[pageType] = { emoji: null, timestamp: null };
+                       
+                        
+                        // Update the display to remove emoji
+                        const element = document.getElementById(pageType);
+                        
+                        if (element) {
+                            const currentText = element.textContent;
+                            
+                            // Remove any emoji from the end of the text
+                            const textWithoutEmoji = currentText.replace(/[\u{1F300}-\u{1F9FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FE0F}\u{1F900}-\u{1F9FF}\u{1F1E0}-\u{1F1FF}]$/gu, '').trim();
+                            element.textContent = textWithoutEmoji;
+
+                        }
+                    }
+                }
+            }
+        }
+
+    async function loadSelectedItemAndEmoji() {
+    const currentTime = new Date();
+
+        for(let i = 0; i < PAGE_TYPES.length; i++) {
+            const pageType = PAGE_TYPES[i];
+            const element = document.getElementById(pageType);
+            
+            try {
+                
+                const itemQuery = query(
+                    collection(db, MAGICAL_ITEM_COLLECTION),
+                    where("page_type", "==", pageType),
+                    orderBy("timestamp", "desc"),
+                    limit(1)  
+                );
+
+                const emojiQuery = query(
+                    collection(db, EMOJI_COLLECTION),
+                    where("pageType", "==", pageType),
+                    orderBy("timestamp", "desc"),
+                    limit(1)
+                );
+
+                const [itemSnapshot, emojiSnapshot] = await Promise.all([
+                    getDocs(itemQuery),
+                    getDocs(emojiQuery)
+                ]);
+
+                let displayText = '';
+                let emoji ='';
+
+                // First, handle item display
+                if (!itemSnapshot.empty) {
+                    const itemData = itemSnapshot.docs[0].data();
+                    displayText = `The Selected Item for ${pageType} is ${itemData.item}`;
+                    if (element) {
+                            element.textContent = displayText;
+                        }
+                }
+
+                // Then handle emoji display
+                if (!emojiSnapshot.empty) {
+                    const emojiData = emojiSnapshot.docs[0].data();
+                    const newEmojiTimestamp = emojiData.timestamp.toDate();
+
+                    // Update emoji state if new
+                    if (!emojiStates[pageType].timestamp || 
+                        newEmojiTimestamp >emojiStates[pageType].timestamp) {
+                        emojiStates[pageType] = {
+                            emoji: emojiData.emoji,
+                            timestamp: newEmojiTimestamp
+                        };
+                        emoji = emojiData.emoji;
+                        // Single place to update display
+                        if (element) {
+                            element.textContent = displayText+emoji;
+                        }
+                       
+                    }
+                }
+                else
+                {
+                    if (element) {
+                            element.textContent = displayText;
+                        }
+                }
+
+                
+
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+}
+
+    // Run the combined fetch every second
+    setInterval(loadSelectedItemAndEmoji, 1000);
+    setInterval(checkAndCleanEmojis, 1000);
 </script>
 
 </body>
