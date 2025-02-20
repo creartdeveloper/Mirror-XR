@@ -6,72 +6,75 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
+        #main-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-left: 30%;
+        }
 
-#main-container
-{
-    display:flex;
-    flex-direction: column;
-    gap:10px;
-    margin-left:35%;
-    
-}
-#dewdrop{
-    background-color: rgb(178, 178, 190);
-    width: 750px;
-    height: 100px;
-    font-size: 30px;
-}
-#pebble{
-    background-color: rgb(190, 157, 157);
-    width: 750px;
-    height: 100px;
-    font-size: 30px;
-}
-#twinkle{
-    background-color: rgb(148, 172, 159);
-    width: 750px;
-    height: 100px;
-    font-size: 30px;
-}
-#whimsy{
-    background-color: rgb(141, 162, 153);
-    width: 750px;
-    height: 100px;
-    font-size: 30px;
-}
+        /* Common styles for all boxes */
+        .box {
+            width: 750px;
+            height: 150px;
+            font-size: 25px;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            align-items: center;
+        }
 
+        /* Individual box colors */
+        #dewdrop {
+            background-color: rgb(210, 99, 63);
+        }
+        #pebble {
+            background-color: rgb(26, 224, 214);
+        }
+        #twinkle {
+            background-color: rgb(20, 226, 113);
+        }
+        #whimsy {
+            background-color: rgb(163, 216, 16);
+        }
 
+        /* Styles for text and emoji sections */
+        .text-section {
+            flex: 1;
+            padding-right: 20px;
+        }
 
-
-
+        .emoji-section {
+            width: 100px;
+            text-align: center;
+            font-size: 40px;
+        }
     </style>
 </head>
 <body>
- <div id = "main-container">
-    <div id="dewdrop">
-
+    <div id="main-container">
+        <div id="dewdrop" class="box">
+            <div class="text-section"></div>
+            <div class="emoji-section"></div>
+        </div>
+        <div id="pebble" class="box">
+            <div class="text-section"></div>
+            <div class="emoji-section"></div>
+        </div>
+        <div id="twinkle" class="box">
+            <div class="text-section"></div>
+            <div class="emoji-section"></div>
+        </div>
+        <div id="whimsy" class="box">
+            <div class="text-section"></div>
+            <div class="emoji-section"></div>
+        </div>
     </div>
-    <div id="pebble">
-        
-    </div>
-    <div id="twinkle">
-        
-    </div>
-    <div id="whimsy">
-        
-    </div>
 
-
-
- </div>   
-
-
-
-<script type="module">
-
+    <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
         import { getStorage } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-storage.js";
-        import { getFirestore, collection, query, orderBy, limit, getDocs,where } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+        import { getFirestore, collection, query, orderBy, limit, getDocs, where } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDiCIatzcDsnHdX_t-m15S1a8pNlrB2egs",
@@ -86,142 +89,114 @@
         const app = initializeApp(firebaseConfig);
         const storage = getStorage(app);
         const db = getFirestore(app);
-       
+        
         const MAGICAL_ITEM_COLLECTION = "magical_item";
-        const PAGE_TYPES = ["dewdrop","twinkle","pebble","whimsy"];
+        const PAGE_TYPES = ["dewdrop", "twinkle", "pebble", "whimsy"];
         const EMOJI_COLLECTION = "emoji";
 
+        const emojiStates = {
+            dewdrop: { emoji: null, timestamp: null },
+            twinkle: { emoji: null, timestamp: null },
+            pebble: { emoji: null, timestamp: null },
+            whimsy: { emoji: null, timestamp: null }
+        };
 
+        const pageItems = {
+            "dewdrop": null,
+            "pebble": null,
+            "twinkle": null,
+            "whimsy": null
+        };
 
+        async function loadSelectedItemAndEmoji() {
+            const currentTime = new Date();
 
-        
-        
-    // Keep track of last emoji and its timestamp for each page type
-    const emojiStates = {
-        dewdrop: { emoji: null, timestamp: null },
-        twinkle: { emoji: null, timestamp: null },
-        pebble: { emoji: null, timestamp: null },
-        whimsy: { emoji: null, timestamp: null }
-    };
+            for(let i = 0; i < PAGE_TYPES.length; i++) {
+                const pageType = PAGE_TYPES[i];
+                const element = document.getElementById(pageType);
+                const textSection = element.querySelector('.text-section');
+                const emojiSection = element.querySelector('.emoji-section');
+                
+                try {
+                    const itemQuery = query(
+                        collection(db, MAGICAL_ITEM_COLLECTION),
+                        where("page_type", "==", pageType),
+                        orderBy("timestamp", "desc"),
+                        limit(1)  
+                    );
 
-    // Function to check and filter emojis based on time
+                    const emojiQuery = query(
+                        collection(db, EMOJI_COLLECTION),
+                        where("pageType", "==", pageType),
+                        orderBy("timestamp", "desc"),
+                        limit(1)
+                    );
+
+                    const [itemSnapshot, emojiSnapshot] = await Promise.all([
+                        getDocs(itemQuery),
+                        getDocs(emojiQuery)
+                    ]);
+
+                    // Handle item display
+                    if (!itemSnapshot.empty) {
+                        const itemData = itemSnapshot.docs[0].data();
+                        if(pageItems[pageType] || pageItems[pageType] != itemData.item) {
+                            const displayText = `The Selected Item for ${pageType} is ${itemData.item}`;
+                            if (textSection) {
+                                textSection.textContent = displayText;
+                            }
+                        }
+                    }
+
+                    // Handle emoji display
+                    if (!emojiSnapshot.empty) {
+                        const emojiData = emojiSnapshot.docs[0].data();
+                        const newEmojiTimestamp = emojiData.timestamp.toDate();
+
+                        if (!emojiStates[pageType].timestamp || 
+                            newEmojiTimestamp > emojiStates[pageType].timestamp) {
+                            emojiStates[pageType] = {
+                                emoji: emojiData.emoji,
+                                timestamp: newEmojiTimestamp
+                            };
+                            if (emojiSection) {
+                                emojiSection.textContent = emojiData.emoji;
+                            }
+                        }
+                    }
+
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+        }
+
         async function checkAndCleanEmojis() {
             const currentTime = new Date();
             
-            
             for(let i = 0; i < PAGE_TYPES.length; i++) {
                 const pageType = PAGE_TYPES[i];
-               
                 
                 if (emojiStates[pageType].timestamp) {
-                    // Convert timestamp to milliseconds for comparison
                     const emojiTime = emojiStates[pageType].timestamp;
-                    const timeDifference = (currentTime - emojiTime) ;
-                   
-
+                    const timeDifference = (currentTime - emojiTime);
                     
-                   
-                  
                     if (timeDifference >= 12000) {
-                        // Clear emoji state if it's past 12 seconds
                         //emojiStates[pageType] = { emoji: null, timestamp: null };
-                       
-                        
-                        // Update the display to remove emoji
                         const element = document.getElementById(pageType);
+                        const emojiSection = element.querySelector('.emoji-section');
                         
-                        if (element) {
-                            const currentText = element.textContent;
-                            
-                            // Remove any emoji from the end of the text
-                            const textWithoutEmoji = currentText.replace(/[\u{1F300}-\u{1F9FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FE0F}\u{1F900}-\u{1F9FF}\u{1F1E0}-\u{1F1FF}]$/gu, '').trim();
-                            element.textContent = textWithoutEmoji;
-
+                        if (emojiSection) {
+                            emojiSection.textContent = '';
                         }
                     }
                 }
             }
         }
 
-    async function loadSelectedItemAndEmoji() {
-    const currentTime = new Date();
-
-        for(let i = 0; i < PAGE_TYPES.length; i++) {
-            const pageType = PAGE_TYPES[i];
-            const element = document.getElementById(pageType);
-            
-            try {
-                
-                const itemQuery = query(
-                    collection(db, MAGICAL_ITEM_COLLECTION),
-                    where("page_type", "==", pageType),
-                    orderBy("timestamp", "desc"),
-                    limit(1)  
-                );
-
-                const emojiQuery = query(
-                    collection(db, EMOJI_COLLECTION),
-                    where("pageType", "==", pageType),
-                    orderBy("timestamp", "desc"),
-                    limit(1)
-                );
-
-                const [itemSnapshot, emojiSnapshot] = await Promise.all([
-                    getDocs(itemQuery),
-                    getDocs(emojiQuery)
-                ]);
-
-                let displayText = '';
-                let emoji ='';
-
-                // First, handle item display
-                if (!itemSnapshot.empty) {
-                    const itemData = itemSnapshot.docs[0].data();
-                    displayText = `The Selected Item for ${pageType} is ${itemData.item}`;
-                    if (element) {
-                            element.textContent = displayText;
-                        }
-                }
-
-                // Then handle emoji display
-                if (!emojiSnapshot.empty) {
-                    const emojiData = emojiSnapshot.docs[0].data();
-                    const newEmojiTimestamp = emojiData.timestamp.toDate();
-
-                    // Update emoji state if new
-                    if (!emojiStates[pageType].timestamp || 
-                        newEmojiTimestamp >emojiStates[pageType].timestamp) {
-                        emojiStates[pageType] = {
-                            emoji: emojiData.emoji,
-                            timestamp: newEmojiTimestamp
-                        };
-                        emoji = emojiData.emoji;
-                        // Single place to update display
-                        if (element) {
-                            element.textContent = displayText+emoji;
-                        }
-                       
-                    }
-                }
-                else
-                {
-                    if (element) {
-                            element.textContent = displayText;
-                        }
-                }
-
-                
-
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-}
-
-    // Run the combined fetch every second
-    setInterval(loadSelectedItemAndEmoji, 1000);
-    setInterval(checkAndCleanEmojis, 1000);
-</script>
-
+        // Start the intervals
+        setInterval(loadSelectedItemAndEmoji, 1000);
+        setInterval(checkAndCleanEmojis, 8000);
+    </script>
 </body>
 </html>
