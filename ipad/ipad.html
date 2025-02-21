@@ -151,50 +151,64 @@
     }
     
             //Stores each Butterfly in list
-            function storeText(nickName,shortText,fullText)
+            function storeText(nickName,shortText,fullText,id)
             {
                 
                 const data ={};
                 data[shortText]=fullText;
-                butterflyTexts[nickName] = data;
+                butterflyTexts[id] = data;
             
             }
     
     
             //Displays the Modal
-            function showModal(nickName) 
+            function showModal(id,nickName) 
             {
               
                 modal.innerHTML='';
-                const fulldata = butterflyTexts[nickName];
+                const fulldata = butterflyTexts[id];
                 const butterflyText = Object.keys(fulldata)[0];
                 const fullText = Object.values(fulldata)[0];
                 const imageWithText = document.createElement('div');
                 imageWithText.className = 'butterfly-text-2';
                 
+               
+                
                 const textContent = document.createElement('div');
                 textContent.className = 'text-content';
                 textContent.textContent = butterflyText;
-                
                 imageWithText.appendChild(textContent);
+                modal.appendChild(imageWithText);
+            
                 
-                const textDiv = document.createElement('div');
-                textDiv.className = 'card-text';
-                textDiv.innerHTML = fullText;
+               
+                if(fullText) 
+                {
+                    const textDiv = document.createElement('div');
+                    textDiv.className = 'card-text';
+                    textDiv.innerHTML = fullText;
+                    modal.appendChild(textDiv);
+                }
                 
     
     
-                const nickname = document.createElement('div');
-                nickname.className = 'nickname-text';
-                nickname.innerHTML = nickName;
+                
+                
+                //Check if nickName exists
+                if(nickName)
+                {   const nickname = document.createElement('div');
+                    nickname.className = 'nickname-text';
+                    nickname.innerHTML = nickName;
+                    modal.appendChild(nickname);
+                }
                
     
               
                
                 modal.appendChild(closeButton);
-                modal.appendChild(imageWithText);
-                modal.appendChild(textDiv);
-                modal.appendChild(nickname);
+               
+               
+               
             
     
                 
@@ -237,7 +251,7 @@
                 textContent.style.animationDuration = (Math.random() * 0.3 + 0.8) + 's';
                 
                 container.addEventListener('click', () => {
-                    showModal(nickName);
+                    showModal(id);
                 });
     
                 mainContainer.appendChild(container);
@@ -364,7 +378,7 @@
                     if(!ids.includes(bid))
                    {    
                         ids.push(bid);
-                        storeText(sanitizedNickname,sanitizedKeyword,sanitizedContent);
+                        storeText(sanitizedNickname,sanitizedKeyword,sanitizedContent,bid);
                         createButterflyText(sanitizedKeyword,sanitizedNickname,bid); 
                 
                     }
