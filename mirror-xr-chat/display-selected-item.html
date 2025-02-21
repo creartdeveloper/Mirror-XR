@@ -141,7 +141,7 @@
                     if (!itemSnapshot.empty) {
                         const itemData = itemSnapshot.docs[0].data();
                         if(pageItems[pageType] || pageItems[pageType] != itemData.item) {
-                            const displayText = `The Selected Item for ${pageType} is ${itemData.item}`;
+                            const displayText = `${pageType}...${itemData.item}....`;
                             if (textSection) {
                                 textSection.textContent = displayText;
                             }
