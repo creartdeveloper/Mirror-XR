@@ -6,22 +6,26 @@
     <title>Mirror App</title>
     <style>
 
-        body{
-            background: linear-gradient(180deg, 
-        #1B0B36 0%,      /* Deep purple at top */
-        #2A1155 30%,     /* Mid purple */
-        #4B2179 60%,     /* Lighter purple */
-        #9B6B9E 85%,     /* Pink-purple */
-        #CC8FA7 100%     /* Soft pink at bottom */
-    );
+        html, body {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                position: fixed;
+                background: linear-gradient(180deg, 
+                    #1B0B36 0%,
+                    #2A1155 30%,
+                    #4B2179 60%,
+                    #9B6B9E 85%,
+                    #CC8FA7 100%
+                );
+            }
 
-        
-        }
-        
-
+        /* Update main container */
         .main-container {
-            width:875px;
-            height:1100px;
+            width: 875px;
+            height: 1100px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -30,7 +34,10 @@
             background-position: center;
             background-repeat: no-repeat;
             overflow: hidden;
-        
+            position: fixed;  /* Add this */
+            top: 50%;        /* Add this */
+            left: 50%;       /* Add this */
+            transform: translate(-50%, -50%); /* Add this to center */
         }
 
         .message-box {
