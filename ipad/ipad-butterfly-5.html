@@ -123,7 +123,7 @@
                 const id = crypto.randomUUID();
                 ids.push(id);
                 createButterflyText(text1,nickName,id);
-                storeText(nickName,text1,text2);
+                storeText(nickName,text1,text2,id);
                 addButterflyToFirestore(text1,text2,nickName,id);
                 hideModal();
                 modal.innerHTML = '';
