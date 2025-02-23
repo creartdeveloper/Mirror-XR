@@ -198,8 +198,9 @@
 
     //Hides The Modal
     function hideModal() {
-        modal.classList.remove('active');
-        modal.style.animation = '';
+        mainContainer.removeChild(modal);
+        // modal.classList.remove('active');
+        // modal.style.animation = '';
         
     }
 

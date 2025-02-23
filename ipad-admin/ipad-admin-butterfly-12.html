@@ -308,7 +308,7 @@ async function loadButterfliesFromFirestore()
        const q = query(
        collection(db, CHAR_BUTTERFLY_COLLECTION),
        where("device", "==", "ipad"),
-       where("session","==","8"),
+       where("session","==","12"),
        );
        const querySnapshot = await getDocs(q);
 
@@ -363,7 +363,7 @@ async function deleteButterflyFromFirestore(id) {
         const q = query(
             collection(db, CHAR_BUTTERFLY_COLLECTION),
             where("device", "==", "ipad"),
-            where("session","==","8"),
+            where("session","==","12"),
             where("id","==",id)
         );
 
