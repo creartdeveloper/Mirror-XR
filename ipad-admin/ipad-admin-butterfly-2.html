@@ -300,33 +300,7 @@
     }
     let currIds = [];
 
-    async function loadButterfliesFromFirestore() 
-    {
-               
-               const q = query(
-               collection(db, CHAR_BUTTERFLY_COLLECTION),
-               where("device", "==", "ipad"),
-               where("session","==","1")
-               );
-               const querySnapshot = await getDocs(q);
-
-               querySnapshot.forEach((doc) => {
-                   const data = doc.data();
-                   const sanitizedKeyword = sanitizeInput(data.keyword);
-                   const sanitizedContent = sanitizeInput(data.content);
-                   const sanitizedNickname = sanitizeInput(data.nickname);
-                   const bid = sanitizeInput(data.id);
-                   currIds.push(bid);
-                   if(!ids.includes(bid))
-                { 
-                    ids.push(bid);
-                    storeText(sanitizedNickname,sanitizedKeyword,sanitizedContent);
-                    createButterflyText(sanitizedKeyword,sanitizedNickname,bid); 
-                }
-               });
-              
     
-    }
 
     loadButterfliesFromFirestore();
     setInterval(loadButterfliesFromFirestore, 3000);
@@ -352,14 +326,41 @@
         }
     }
    
+    async function loadButterfliesFromFirestore() 
+    {
+               
+               const q = query(
+               collection(db, CHAR_BUTTERFLY_COLLECTION),
+               where("device", "==", "ipad"),
+               where("session","==","2"),
+               );
+               const querySnapshot = await getDocs(q);
+
+               querySnapshot.forEach((doc) => {
+                   const data = doc.data();
+                   const sanitizedKeyword = sanitizeInput(data.keyword);
+                   const sanitizedContent = sanitizeInput(data.content);
+                   const sanitizedNickname = sanitizeInput(data.nickname);
+                   const bid = sanitizeInput(data.id);
+                   currIds.push(bid);
+                   if(!ids.includes(bid))
+                { 
+                    ids.push(bid);
+                    storeText(sanitizedNickname,sanitizedKeyword,sanitizedContent);
+                    createButterflyText(sanitizedKeyword,sanitizedNickname,bid); 
+                }
+               });
+              
+    
+    }
 
     async function deleteButterflyFromFirestore(id) {
             try {
                 // Create a query to find the document with matching id field
                 const q = query(
                     collection(db, CHAR_BUTTERFLY_COLLECTION),
-                    where("device", "==", "ipad"),
-                    where("session","==","1")
+                    where("id", "==", id),
+                    where("session","==","2"),
                 );
 
                 // Get the documents that match

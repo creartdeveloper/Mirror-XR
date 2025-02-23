@@ -197,38 +197,40 @@ function hideModal() {
 }
 
 // Create each butterfly
-function createButterflyText(text,nickName) {
+// Create each butterfly
+function createButterflyText(text,nickName,id) {
 
-    const container = document.createElement('div');
-    container.className = 'butterfly-text';
-    
-    const textContent = document.createElement('div');
-    textContent.className = 'text-content';
-    textContent.textContent = text.length > 50 ? text.substring(0, 5) + '...' : text;
-    container.appendChild(textContent);
-    
-    
-    const position = getRandomPosition();
-    container.style.left = position.x + 'px';
-    container.style.top = position.y + 'px';
-   
-    
-    container.style.animationDuration = (Math.random() * 3 + 4) + 's';
-    textContent.style.animationDuration = (Math.random() * 0.3 + 0.8) + 's';
-    
-    container.addEventListener('click', () => {
-        showModal(nickName);
-    });
+        const container = document.createElement('div');
+        container.className = 'butterfly-text';
+        container.id= id;
 
-    mainContainer.appendChild(container);
-    
-    if (butterflies.push(container) > maxButterflies) 
-    {
-        
-        const oldest = butterflies.shift();
-        oldest.remove();
-    
-    }
+        const textContent = document.createElement('div');
+        textContent.className = 'text-content';
+        textContent.textContent = text.length > 50 ? text.substring(0, 5) + '...' : text;
+        container.appendChild(textContent);
+
+
+        const position = getRandomPosition();
+        container.style.left = position.x + 'px';
+        container.style.top = position.y + 'px';
+
+
+        container.style.animationDuration = (Math.random() * 3 + 4) + 's';
+        textContent.style.animationDuration = (Math.random() * 0.3 + 0.8) + 's';
+
+        container.addEventListener('click', () => {
+            showModal(nickName);
+        });
+
+        mainContainer.appendChild(container);
+
+        if (butterflies.push(container) > maxButterflies) 
+        {
+            
+            const oldest = butterflies.shift();
+            oldest.remove();
+
+}
 
 }
 
@@ -276,15 +278,8 @@ function sanitizeInput(input) {
 
 
 // --------------------start retrieve the data----------------------
-async function storeTimeStamp(timestamp)
-{
-      timestamps.push(timestamp);
-}
-
-
-
-
 let ids =[];
+let currIds = [];
     async function storeId(id)
 {
       ids.push(id);
@@ -295,7 +290,7 @@ let ids =[];
 //as it cross check the timestamps and only allows the latest ones
 async function loadButterfliesFromFirestore() 
     {
-               
+               currIds=[];
                const q = query(
                collection(db, CHAR_BUTTERFLY_COLLECTION),
                where("device", "==", "ipad"),
@@ -309,6 +304,7 @@ async function loadButterfliesFromFirestore()
                    const sanitizedContent = sanitizeInput(data.content);
                    const sanitizedNickname = sanitizeInput(data.nickname);
                    const bid = sanitizeInput(data.id);
+                   currIds.push(bid);
                    if(!ids.includes(bid))
                 { 
                     ids.push(bid);
@@ -316,6 +312,9 @@ async function loadButterfliesFromFirestore()
                     createButterflyText(sanitizedKeyword,sanitizedNickname,bid); 
                 }
                });
+
+
+               clearDeletedButterflies(currIds,ids);
     
     }
 
@@ -327,25 +326,23 @@ setInterval(loadButterfliesFromFirestore, 1000);
 // --------------------end retrieve the data----------------------
 
 // Write to the firebase
-async function addButterflyToFirestore(keyword, content, nickname) {
-    try { 
-        console.log("add to FB");
-        const sanitizedKeyword = sanitizeInput(keyword);
-        const sanitizedContent = sanitizeInput(content);
-        const sanitizedNickname = sanitizeInput(nickname);
 
-        // Reference to the 'chat_butterfly' collection
-        const docRef = await addDoc(collection(db, CHAR_BUTTERFLY_COLLECTION), {
-            keyword: sanitizedKeyword,
-            content: sanitizedContent,
-            nickname:sanitizedNickname
-        });
 
-        console.log("Document written with ID: ", docRef.id);
-    } catch (e) {
-        console.error("Error adding document: ", e);
-    }
-}
+        function clearDeletedButterflies(current, previous) {
+                // For each item in previous array
+               
+                previous.forEach(item => {
+                    // If item is not in current array (meaning it was deleted)
+                    
+                    if(!current.includes(item)) {
+                     
+                      const cont = document.getElementById(item);
+                      if(cont) {
+                            cont.remove();
+                        }
+                    }
+                })
+            }
 
       </script>
     </body>

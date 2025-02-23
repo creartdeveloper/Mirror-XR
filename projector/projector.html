@@ -307,7 +307,7 @@ let canFetch = true;
                     const sanitizedContent = sanitizeInput(data.content);
                     const sanitizedNickname = sanitizeInput(data.nickname);
                     const bid = sanitizeInput(data.id);
-                    currIds.push(bid);
+                   
                     if(!ids.includes(bid))
                    {    
                         ids.push(bid);
@@ -316,6 +316,7 @@ let canFetch = true;
                 
                     }
                 });
+                currIds.push(bid);
                 clearDeletedButterflies(currIds,ids);
             }
 
