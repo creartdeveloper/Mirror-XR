@@ -142,7 +142,18 @@
             width: 0;
             margin: 0;
         }
+        .item.selected {
+            position: relative;
+            left: 7%;
+            transform: translateX(-50%) scale(1.1);
+            transition: all 0.3s ease;
+        }
 
+        /* Container style when only one item is visible */
+        .items-container.single-item {
+            justify-content: center;
+            gap: 0;
+}
         .item img {
             width: 100%;
             height: 100%;
