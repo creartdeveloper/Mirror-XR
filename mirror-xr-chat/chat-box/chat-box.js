@@ -51,7 +51,7 @@ function getInvisibleDisplay() {
     const visibleDisplays = new Set();
     
     // First find all visible displays
-    for (let i = 1; i <= 14; i++) {
+    for (let i = 1; i <= 8; i++) {
         const display = document.getElementById(`text-display-${i}`);
         if (display && display.style.opacity !== "0") {
             visibleDisplays.add(i);
@@ -59,7 +59,7 @@ function getInvisibleDisplay() {
     }
     
     // Then find invisible displays that aren't adjacent to visible ones
-    for (let i = 1; i <= 14; i++) {
+    for (let i = 1; i <= 8; i++) {
         const display = document.getElementById(`text-display-${i}`);
         if (display && display.style.opacity === "0") {
             // Check if this display is not adjacent to any visible display
@@ -74,7 +74,7 @@ function getInvisibleDisplay() {
     
     if (availableDisplays.length === 0) {
         // If no non-adjacent spots, fall back to any invisible display
-        for (let i = 1; i <= 14; i++) {
+        for (let i = 1; i <= 8; i++) {
             const display = document.getElementById(`text-display-${i}`);
             if (display && display.style.opacity === "0") {
                 availableDisplays.push(i);
@@ -152,7 +152,7 @@ async function updateAllTextBoxes() {
 // Initialize displays
 function createTextDisplays() {
     const container = document.querySelector('.chat-container');
-    for (let i = 1; i <= 14; i++) {
+    for (let i = 1; i <= 8; i++) {
         const displayDiv = document.createElement('div');
         displayDiv.id = `text-display-${i}`;
         displayDiv.className = 'text-display';
