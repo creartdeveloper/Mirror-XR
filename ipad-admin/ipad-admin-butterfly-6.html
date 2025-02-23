@@ -198,11 +198,18 @@ modal.style.animation = 'pop-in 0.3s ease forwards';
 
 
 //Hides The Modal
+//Hides The Modal
 function hideModal() {
-    mainContainer.removeChild(modal);
-    // modal.classList.remove('active');
-    // modal.style.animation = '';
-    
+    try {
+        // Check if modal exists and is a child of mainContainer
+        if (modal && modal.parentNode === mainContainer) {
+            mainContainer.removeChild(modal);
+            // Clear the modal content
+            modal.innerHTML = '';
+        }
+    } catch (error) {
+        console.error('Error hiding modal:', error);
+    }
 }
 
 // Create each butterfly
