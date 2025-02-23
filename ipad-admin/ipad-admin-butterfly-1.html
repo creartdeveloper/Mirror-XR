@@ -303,7 +303,7 @@
 
     async function loadButterfliesFromFirestore() 
     {
-               
+               currIds=[];
                const q = query(
                collection(db, CHAR_BUTTERFLY_COLLECTION),
                where("device", "==", "ipad"),
