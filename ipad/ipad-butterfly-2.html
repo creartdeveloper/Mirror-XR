@@ -57,99 +57,123 @@
             }
             
             //
-            function showModalWithTextBox() 
-            {
-              modal.innerHTML = '';
-              const imageWithText = document.createElement('div');
-              
-              const textBox = document.createElement('textarea');
-              const textBox2 = document.createElement('textarea');
-              const nickNameBox = document.createElement('textarea');
-              
-              
-              textBox.className = 'butterfly-text-box';
-              textBox2.className = 'full-text-box';
-              imageWithText.className = 'butterfly-text-2';
-              nickNameBox.className = 'nick-name-box';
-              
-              modal.appendChild(closeButton);
-             
-              nickNameBox.placeholder = 'nickname';
-              textBox.placeholder = 'short message';
-              textBox2.placeholder = 'message';
-              textBox.maxLength="50";
-              textBox2.maxLength="250";
-              nickNameBox.maxLength="15";
-              
-              
-              imageWithText.appendChild(textBox);
-              
-              
-              const textDiv = document.createElement('div');
-              textDiv.className = 'full-text-box';
-              textDiv.appendChild(textBox2);
-            
+            function showModalWithTextBox() {
+    modal.innerHTML = '';
+    const imageWithText = document.createElement('div');
     
-            
-             // Create submit button
-             const submitButton = document.createElement('button');
-             submitButton.innerHTML ="Submit";
-             submitButton.className = 'submit-button';
+    // Create error prompt elements
+    const errorPrompt = document.createElement('div');
+    errorPrompt.style.display = 'none';
+    errorPrompt.style.position = 'fixed';
+    errorPrompt.style.top = '50%';
+    errorPrompt.style.left = '50%';
+    errorPrompt.style.transform = 'translate(-50%, -50%)';
+    errorPrompt.style.backgroundColor = 'white';
+    errorPrompt.style.padding = '20px';
+    errorPrompt.style.borderRadius = '8px';
+    errorPrompt.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+    errorPrompt.style.zIndex = '1000';
+    errorPrompt.style.minWidth = '300px';
+    errorPrompt.style.textAlign = 'center';
+
+    // Error message text
+    const errorText = document.createElement('p');
+    errorText.style.margin = '0 0 20px 0';
+    errorText.style.color = '#ff4444';
+    errorText.style.fontSize = '16px';
+    errorPrompt.appendChild(errorText);
+
+    // Close button for error prompt
+    const errorCloseBtn = document.createElement('button');
+    errorCloseBtn.textContent = 'Close';
+    errorCloseBtn.style.padding = '8px 16px';
+    errorCloseBtn.style.backgroundColor = '#ff4444';
+    errorCloseBtn.style.color = 'white';
+    errorCloseBtn.style.border = 'none';
+    errorCloseBtn.style.borderRadius = '4px';
+    errorCloseBtn.style.cursor = 'pointer';
+    errorPrompt.appendChild(errorCloseBtn);
+
+    errorCloseBtn.addEventListener('click', () => {
+        errorPrompt.style.display = 'none';
+    });
+
+    // Function to show error prompt
+    const showError = (message) => {
+        errorText.textContent = message;
+        errorPrompt.style.display = 'block';
+    };
     
-             const icon = document.createElement('i');
-             icon.className = 'fas fa-check'; // Add Font Awesome class for the check icon
-            
-           
+    const textBox = document.createElement('textarea');
+    const textBox2 = document.createElement('textarea');
+    const nickNameBox = document.createElement('textarea');
     
+    textBox.className = 'butterfly-text-box';
+    textBox2.className = 'full-text-box';
+    imageWithText.className = 'butterfly-text-2';
+    nickNameBox.className = 'nick-name-box';
     
-            
-             // Add click event to submit button
-            submitButton.addEventListener('click', () => {
-                const text1 = textBox.value; // Get text from the first text box
-                const text2 = textBox2.value;
-                const nickName = nickNameBox.value;
-                
-                //checking if the texts contain bad words//
-                if(checkBadWord(text1)||checkBadWord(text2)||checkBadWord(nickName))
-                {
-                    hideModal();
-                    modal.innerHTML = '';
-                    return ;
-                   
-                   
-                }
-               else{
-                // Available as a global window.crypto
-                const id = crypto.randomUUID();
-                ids.push(id);
-                createButterflyText(text1,nickName,id);
-                storeText(nickName,text1,text2,id);
-                addButterflyToFirestore(text1,text2,nickName,id);
-                hideModal();
-                modal.innerHTML = '';
-               } //commenting out create butterfly to prevent butterflies being created as this is for ipad only
-                
-            });
+    modal.appendChild(closeButton);
     
-                      
-               
-                modal.appendChild(closeButton);
-                modal.appendChild(imageWithText);
-                modal.appendChild(textBox2);
-                modal.appendChild(nickNameBox);
-                modal.appendChild(submitButton);
-            
-                
-                modal.classList.add('active');
-                modal.style.animation = 'pop-in 0.3s ease forwards';
-                mainContainer.appendChild(modal);
-            
-            
-           
-     
-     
-    }
+    nickNameBox.placeholder = 'Nickname (Required)';
+    textBox.placeholder = 'Subject (Required)';
+    textBox2.placeholder = 'Message (Required)';
+    textBox.maxLength="50";
+    textBox2.maxLength="250";
+    nickNameBox.maxLength="15";
+    textBox.required = true;
+    textBox2.required = true;
+    nickNameBox.required = true;
     
+    imageWithText.appendChild(textBox);
+    
+    const textDiv = document.createElement('div');
+    textDiv.className = 'full-text-box';
+    textDiv.appendChild(textBox2);
+    
+    const submitButton = document.createElement('button');
+    submitButton.innerHTML = "Submit";
+    submitButton.className = 'submit-button';
+    
+    // Add click event to submit button
+    submitButton.addEventListener('click', () => {
+        const text1 = textBox.value.trim();
+        const text2 = textBox2.value.trim();
+        const nickName = nickNameBox.value.trim();
+        
+        // Check if any field is empty
+        if (!text1 || !text2 || !nickName) {
+            showError('Please fill in all fields');
+            return;
+        }
+        
+        //checking if the texts contain bad words
+        if(checkBadWord(text1)||checkBadWord(text2)||checkBadWord(nickName)) {
+            hideModal();
+            modal.innerHTML = '';
+            return;
+        }
+        else {
+            const id = crypto.randomUUID();
+            ids.push(id);
+            createButterflyText(text1,nickName,id);
+            storeText(nickName,text1,text2,id);
+            hideModal();
+            modal.innerHTML = '';
+        }
+    });
+    
+    modal.appendChild(closeButton);
+    modal.appendChild(errorPrompt); // Add error prompt to modal
+    modal.appendChild(imageWithText);
+    modal.appendChild(textBox2);
+    modal.appendChild(nickNameBox);
+    modal.appendChild(submitButton);
+    
+    modal.classList.add('active');
+    modal.style.animation = 'pop-in 0.3s ease forwards';
+    mainContainer.appendChild(modal);
+}
             //Stores each Butterfly in list
             function storeText(nickName,shortText,fullText,id)
             {

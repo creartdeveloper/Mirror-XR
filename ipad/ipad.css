@@ -40,7 +40,7 @@
 
 .butterfly-text {
         position: absolute;
-        margin-right: 10px;
+        margin-right: 120px;
         cursor: pointer;
         user-select: none;
         font-family: "Delius", serif;
@@ -58,9 +58,12 @@
         justify-content: center;
         animation: float 5s   ease-in-out infinite;
         filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+        z-index: 3000;
         
     }
 .butterfly-text-2 {
+        margin-left: 62px;
+        margin-top:150px;
         position: fixed;
         width: 300px;
         font-family: "Delius", serif;
@@ -90,27 +93,32 @@
 
     }
 
-.modal 
-{
-    transform: translate(-50%, -50%); 
-    width: 300px;
-    height: 500px;
-    background-color: rgb(2, 6, 82);
-    border-radius: 25px;
-    z-index: 2000;
-    display: flex; 
-    flex-direction: column;
-    background-color: rgb(167, 115, 180);
-    margin-top: 10%;
-    margin-left: 35%;
-    opacity: 0;
-    position:absolute;
-    background-image: url('https://cdn.prod.website-files.com/635bd94b8b533d5752353a36/6763e094c5a3d12101caf896_MirrorXR-Butterfly-Card.png');
-}
+    .modal {
+        transform: translate(-50%, -50%); 
+        width: 419px;
+        height: 755px;
+        border-radius: 25px;
+        z-index: 2000;
+        display: flex; 
+        flex-direction: column;
+        margin-top: 1%;
+        margin-left: 35%;
+        opacity: 0;
+        display: flex;  
+        position: absolute;
+        object-fit: cover;
+        background-image: url('../mirror-xr-chat/assets/Butterfly-Card-New.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        display: block;
+       
+    }
 
 .modal.active {
             opacity: 1;
             display: flex;  
+            z-index:4000;
         }
 
 .modal-overlay.active {
@@ -157,18 +165,20 @@
     width: 250px;
     padding: 10px;
     background-color: #ddb7ec;
-    margin-left: 10px;
-    margin-top: 200px;
+    margin-left: 72px;
+    margin-top: 340px;
     margin-right: 10px;
+    font-family: "Delius", serif;
     overflow-wrap:break-word
 }
 .butterfly-text-box {
         border-radius: 15px;
         border:none;
+        outline: none;
         height:20%;
         width:40%;
         padding:10px;
-        background: rgba(237, 220, 34, 0.3);
+        background:transparent;
         font-family: "Delius", serif;
         font-weight: 400;
         font-style: normal;
@@ -181,8 +191,8 @@
         width: 250px;
         padding: 10px;
         background-color: #ddb7ec;
-        margin-left: 10px;
-        margin-top: 200px;
+        margin-left: 72px;
+        margin-top: 340px;
         margin-right: 10px;
         font-family: "Delius", serif;
         font-weight: 400;
@@ -190,8 +200,8 @@
 }
 .nick-name-box {
         position: fixed;
-        margin-left: 10px;
-        margin-bottom: 10px;
+        margin-left: 72px;
+        margin-bottom: 144px;
         bottom:0;
         border-radius: 10px;
         padding: 5px;
@@ -225,27 +235,41 @@
 }
     
 .submit-button{
+        color: white;
+        font-family: "Delius", serif;
         position:fixed;
         bottom:0;
         right:0;
-        width:100px;
-        height:40px;
-        margin-right:30px;
-        margin-bottom: 10px;
-        border-radius: 10px;
+        width:108px;
+        height:45px;
+        margin-right:80px;
+        margin-bottom: 145px;
+        border-radius: 12px;
         border: #333;
-        background-color: #c169ff;
+        background-color: #7626af;
         
 
        
         
     }
+    .submit-button:hover{
+        background-color: #2D1459;
+    }
+
+    .submit-button:active{
+       
+        transform: scale(0.90);
+  
+    }
     
 .nickname-text
     {
+        color: rgb(4, 1, 10);
         position: fixed;
-        margin-left: 40px;
-        margin-bottom: 10px;
+        font-weight: bold;
+        margin-left: 80px;
+        margin-bottom: 144px;
+        font-family: "Delius", serif;
         bottom:0;
         border-radius: 10px;
         padding: 5px;
