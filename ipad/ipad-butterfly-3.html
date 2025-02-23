@@ -121,6 +121,7 @@
                else{
                 // Available as a global window.crypto
                 const id = crypto.randomUUID();
+                ids.push(id);
                 createButterflyText(text1,nickName,id);
                 storeText(nickName,text1,text2);
                 addButterflyToFirestore(text1,text2,nickName,id);
@@ -150,50 +151,64 @@
     }
     
             //Stores each Butterfly in list
-            function storeText(nickName,shortText,fullText)
+            function storeText(nickName,shortText,fullText,id)
             {
                 
                 const data ={};
                 data[shortText]=fullText;
-                butterflyTexts[nickName] = data;
+                butterflyTexts[id] = data;
             
             }
     
     
             //Displays the Modal
-            function showModal(nickName) 
+            function showModal(id,nickName) 
             {
               
                 modal.innerHTML='';
-                const fulldata = butterflyTexts[nickName];
+                const fulldata = butterflyTexts[id];
                 const butterflyText = Object.keys(fulldata)[0];
                 const fullText = Object.values(fulldata)[0];
                 const imageWithText = document.createElement('div');
                 imageWithText.className = 'butterfly-text-2';
                 
+               
+                
                 const textContent = document.createElement('div');
                 textContent.className = 'text-content';
                 textContent.textContent = butterflyText;
-                
                 imageWithText.appendChild(textContent);
+                modal.appendChild(imageWithText);
+            
                 
-                const textDiv = document.createElement('div');
-                textDiv.className = 'card-text';
-                textDiv.innerHTML = fullText;
+               
+                if(fullText) 
+                {
+                    const textDiv = document.createElement('div');
+                    textDiv.className = 'card-text';
+                    textDiv.innerHTML = fullText;
+                    modal.appendChild(textDiv);
+                }
                 
     
     
-                const nickname = document.createElement('div');
-                nickname.className = 'nickname-text';
-                nickname.innerHTML = nickName;
+                
+                
+                //Check if nickName exists
+                if(nickName)
+                {   const nickname = document.createElement('div');
+                    nickname.className = 'nickname-text';
+                    nickname.innerHTML = nickName;
+                    modal.appendChild(nickname);
+                }
                
     
               
                
                 modal.appendChild(closeButton);
-                modal.appendChild(imageWithText);
-                modal.appendChild(textDiv);
-                modal.appendChild(nickname);
+               
+               
+               
             
     
                 
@@ -236,7 +251,7 @@
                 textContent.style.animationDuration = (Math.random() * 0.3 + 0.8) + 's';
                 
                 container.addEventListener('click', () => {
-                    showModal(nickName);
+                    showModal(id);
                 });
     
                 mainContainer.appendChild(container);
@@ -338,12 +353,19 @@
             
             
                 // --------------------start retrieve the data----------------------
+           
+            let currIds = [];
+            let ids =[];
+                async function storeId(id)
+            {
+                ids.push(id);
+            }
             async function loadButterfliesFromFirestore() {
-               
+                currIds=[];
                 const q = query(
                 collection(db, CHAR_BUTTERFLY_COLLECTION),
                 where("device", "==", "ipad"),
-                where("session","==","3")
+                where("session", "==", "3")
                 );
                 const querySnapshot = await getDocs(q);
 
@@ -353,13 +375,21 @@
                     const sanitizedContent = sanitizeInput(data.content);
                     const sanitizedNickname = sanitizeInput(data.nickname);
                     const bid = sanitizeInput(data.id);
-                    storeText(sanitizedNickname,sanitizedKeyword,sanitizedContent);
-                    createButterflyText(sanitizedKeyword,sanitizedNickname,bid); // Display each butterfly
+                    currIds.push(bid);
+                    if(!ids.includes(bid))
+                   {    
+                        ids.push(bid);
+                        storeText(sanitizedNickname,sanitizedKeyword,sanitizedContent,bid);
+                        createButterflyText(sanitizedKeyword,sanitizedNickname,bid); 
+                
+                    }
                 });
+                clearDeletedButterflies(currIds,ids);
             }
             // Commenting this fucntion to prevent butterflies in the screen
             
             loadButterfliesFromFirestore();
+            setInterval(loadButterfliesFromFirestore, 3000);
             loadBadWordsFromFirestore();
             
             // --------------------end retrieve the data----------------------
@@ -381,13 +411,28 @@
                         nickname: sanitizedNickname,
                     });
 
-                    console.log("Document written with ID: ", docRef.id);
+                    
                     return docRef.id;
 
                 } catch (e) {
                     console.error("Error adding document: ", e);
                     throw e; // Propagate error to caller
                 }
+            }
+            
+            
+            function clearDeletedButterflies(current, previous) {
+                // For each item in previous array
+
+                previous.forEach(item => {
+                    // If item is not in current array (meaning it was deleted)
+                    if(!current.includes(item)) {
+                      const cont = document.getElementById(item);
+                      if(cont) {
+                            cont.remove();
+                        }
+                    }
+                })
             }
 
            
