@@ -305,7 +305,8 @@
                
                const q = query(
                collection(db, CHAR_BUTTERFLY_COLLECTION),
-               where("device", "==", "ipad")
+               where("device", "==", "ipad"),
+               where("session","==","1")
                );
                const querySnapshot = await getDocs(q);
 
