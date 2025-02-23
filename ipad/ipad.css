@@ -252,7 +252,7 @@
 }
     
 .submit-button{
-        color: white;
+        color: rgb(233, 224, 224);
         font-family: "Delius", serif;
         position:fixed;
         bottom:0;
@@ -263,7 +263,7 @@
         margin-bottom: 145px;
         border-radius: 12px;
         border: #333;
-        background-color: #7626af;
+        background-color: #af2f26;
         
 
        
