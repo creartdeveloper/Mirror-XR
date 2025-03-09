@@ -438,7 +438,7 @@
                     const sanitizedContent = sanitizeInput(content);
                     const sanitizedNickname = sanitizeInput(nickname);
 
-                    // Create a new document with auto-generated ID in the collection
+                     // Create a new document with auto-generated ID in the collection
                     const docRef = await addDoc(collection(db, CHAR_BUTTERFLY_COLLECTION), {
                         id:id,
                         device: "ipad",
