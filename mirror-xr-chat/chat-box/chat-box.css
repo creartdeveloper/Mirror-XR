@@ -1,25 +1,29 @@
-
 body {
     background: #00FF00;
     margin: 0;
+    padding: 0; /* Remove padding */
+    display: flex;
     align-items: center;
     justify-content: center;
+    min-height: 100vh;
 }
 
 .chat-container {
     display: grid;
-    grid-template-columns: 400px 400px 200px 400px 400px;
-    gap: 20px;
-    padding: 20px;
+    grid-template-columns: 360px 500px 360px;
+    grid-template-rows: repeat(3, auto);
+    padding: 0; /* Remove padding */
     background-color: transparent;
     border-radius: 20px;
+    width: 100%; /* Fill available width */
+    max-width: 100%; /* Allow container to expand to full width */
+    margin: 0; /* Remove auto margins */
 }
-
 
 .text-display {
     position: relative;
-    height: 350px;
-    width: 450px;  /* Reduced from 420px */
+    height: 285px;
+    width: 380px;
     background-size: cover;
     font-family: "Delius", serif;
     background-position: center;
@@ -27,18 +31,16 @@ body {
     word-wrap: break-word;
     transition: transform 0.3s ease;
     cursor: default;
-    word-wrap: break-word;
-   background-image: url('.../Mirror XR Mira iPad UI/NEW Resolution/iPad-IU-Chat-Box.png');
+    background-image: url('../assets/chat-boxes/Resolume-IU-Dewdrop-M.gif');
 }
 
 .text-content {
     position: absolute;
-    width: 300px;
-    height: 100px;
-    margin-top: 60px;
-    margin-left: 30px;
-    padding-top: 30px;
-    padding-left: 25px;
+    width: 330px;
+    height: 130px;
+    margin-top: 30px;
+    padding-top: 25px;
+    padding-left: 28px;
     color: black;
     border-radius: 50px;
     font-size: 25px;
@@ -54,8 +56,14 @@ body {
     z-index: 1000;
 }
 
-.text-display:nth-child(4n+1) { grid-column: 1; }  /* First element */
-.text-display:nth-child(4n+2) { grid-column: 2; }  /* Second element */
-.text-display:nth-child(4n+3) { grid-column: 4; }  /* Third element */
-.text-display:nth-child(4n+4) { grid-column: 5; }  /* Fourth element */
+/* Row 1: Two boxes with gap between */
+.text-display:nth-child(1) { grid-column: 1; grid-row: 1; }
+.text-display:nth-child(2) { grid-column: 3; grid-row: 1; }
 
+/* Row 2: Two boxes with gap between */
+.text-display:nth-child(3) { grid-column: 1; grid-row: 2; }
+.text-display:nth-child(4) { grid-column: 3; grid-row: 2; }
+
+/* Row 3: Two boxes with gap between */
+.text-display:nth-child(5) { grid-column: 1; grid-row: 3; }
+.text-display:nth-child(6) { grid-column: 3; grid-row: 3; }
