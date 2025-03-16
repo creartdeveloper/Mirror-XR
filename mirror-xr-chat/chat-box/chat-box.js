@@ -157,7 +157,7 @@ function createTextDisplays() {
         const displayDiv = document.createElement('div');
         displayDiv.id = `text-display-${i}`;
         displayDiv.className = 'text-display';
-        displayDiv.style.opacity = "0";
+        displayDiv.style.opacity = "1";
         
         const contentDiv = document.createElement('div');
         contentDiv.id = `text-${i}`;

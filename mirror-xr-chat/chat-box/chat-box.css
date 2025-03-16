@@ -10,7 +10,7 @@ body {
 
 .chat-container {
     display: grid;
-    grid-template-columns: 360px 770px 360px;
+    grid-template-columns: 360px 776px 360px;
     grid-template-rows: repeat(3, auto);
     padding: 0; /* Remove padding */
     background-color: transparent;
