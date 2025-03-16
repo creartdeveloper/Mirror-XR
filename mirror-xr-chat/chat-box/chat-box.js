@@ -132,7 +132,7 @@ async function updateDisplay(collection, index) {
         // Set timeout to clear this display after 12 seconds
         setTimeout(() => {
             textDisplay.style.opacity = "0";
-        }, 1200000);
+        }, 10000);
     } catch (error) {
         console.error('Error updating display:', error);
     }
